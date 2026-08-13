@@ -572,7 +572,6 @@ section {
 
 }
 
-
 /*==================================================
                 NAVIGATION LINKS
 ==================================================*/
@@ -701,13 +700,13 @@ section {
 
 }
 
-.nav-links a.active {
+.nav-links a.hover {
 
     color: var(--color-primary);
 
 }
 
-.nav-links a.active::before {
+.nav-links a.hover::before {
 
     transform:
         translateX(-50%)

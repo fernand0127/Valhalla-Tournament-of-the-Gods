@@ -105,7 +105,7 @@
             rgba(255,255,255,.01)
         );
 
-    backdrop-filter:blur(18px);
+    backdrop-filter:none;
 
     box-shadow:
         0 25px 60px rgba(0,0,0,.45);
@@ -427,7 +427,7 @@
 
     background:var(--bracket-bg);
 
-    backdrop-filter:blur(14px);
+    backdrop-filter:none;
 
     color:var(--color-white);
 
@@ -439,10 +439,10 @@
 
     transition:
 
-        transform .35s ease,
-        border-color .35s ease,
-        background .35s ease,
-        box-shadow .35s ease;
+        transform .15s ease,
+        border-color .15s ease,
+        background .15s ease,
+        box-shadow .15s ease;
 
 }
 
@@ -497,7 +497,7 @@
 
     transform:
 
-        translateX(8px)
+        translateY(-3px)
         scale(1.02);
 
     border-color:
@@ -580,7 +580,7 @@
 
     background:#9f1f1f;
 
-    backdrop-filter:blur(14px);
+    backdrop-filter:none;
 
     color:var(--color-white);
 
@@ -733,7 +733,7 @@
 
     background:green;
 
-    backdrop-filter:blur(14px);
+    backdrop-filter:none;
 
     color:var(--color-white);
 
@@ -1032,7 +1032,7 @@
             rgba(255,255,255,.015)
         );
 
-    backdrop-filter:blur(20px);
+    backdrop-filter:none;
 
     box-shadow:
 
