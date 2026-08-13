@@ -407,25 +407,19 @@ section {
 .navbar {
 
     position: fixed;
+
     top: 0;
     left: 0;
 
     width: 100%;
 
-    z-index: 1000;
-
-    transition:
-        background var(--transition),
-        border-color var(--transition),
-        padding var(--transition),
-        backdrop-filter var(--transition),
-        box-shadow var(--transition);
+    z-index: 999999;
 
     padding: 22px 0;
 
     border-bottom: 1px solid transparent;
 
-    background: transparent;
+    background: #050505;
 
 }
 
@@ -433,9 +427,9 @@ section {
 
     padding: 14px 0;
 
-    background: rgba(5, 5, 5, .82);
+    background: #050505;
 
-    backdrop-filter: blur(20px);
+    backdrop-filter: none;
 
     border-bottom: 1px solid var(--color-border);
 
@@ -444,12 +438,16 @@ section {
 
 }
 
+
 .navbar::before {
 
     content: "";
 
     position: absolute;
+
     inset: 0;
+
+    z-index: -1;
 
     background:
 
@@ -461,9 +459,11 @@ section {
         );
 
     opacity: 0;
-    transition: opacity var(--transition);
+
+    pointer-events: none;
 
 }
+
 
 .navbar.scrolled::before {
 
@@ -471,7 +471,12 @@ section {
 
 }
 
+
 .navbar-container {
+
+    position: relative;
+
+    z-index: 1;
 
     display: flex;
 
@@ -483,6 +488,24 @@ section {
 
 }
 
+/*==================================================
+            NAVBAR — CAPA SUPERIOR ABSOLUTA
+==================================================*/
+
+.navbar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    z-index: 999999 !important;
+
+    background: #050505 !important;
+
+}
 
 /*==================================================
                     LOGO
