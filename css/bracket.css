@@ -524,28 +524,6 @@
 
 }
 
-.team-card.winner{
-
-    border-color:
-
-        rgba(212,175,55,.45);
-
-    background:
-
-        linear-gradient(
-            135deg,
-            rgba(212,175,55,.14),
-            rgba(255,255,255,.03)
-        );
-
-}
-
-.team-card.winner::before{
-
-    transform:scaleY(1);
-
-}
-
 .team-card.finalist{
 
     border-color:
@@ -911,7 +889,7 @@
 
     position: relative;
 
-    top: -60px;
+    top: -52px;
 
 }
 
@@ -923,6 +901,9 @@
 
 }
 
+.round:nth-child(2) .match:last-of-type {
+    transform: translateY(60px);
+}
 
 /*==================================================
                 FINAL
@@ -932,7 +913,7 @@
 
     gap:0;
 
-    padding-top:320px;
+    padding-top:371.3px;
 
 }
 
@@ -957,7 +938,7 @@
 
     position: relative;
 
-    top: 240px;
+    top: 318px;
 
     justify-content:center;
 
