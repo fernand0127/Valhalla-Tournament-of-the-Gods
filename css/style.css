@@ -3194,7 +3194,7 @@ section {
 .match-button.is-live {
     border-color: transparent;
     box-shadow: none;
-    transform: translateX(-35px);
+    transform: translateX(-32px);
 }
 
 /* Punto indicador EN VIVO */
