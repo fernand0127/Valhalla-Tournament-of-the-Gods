@@ -1,9 +1,14 @@
-exports.handler = async function () {
+exports.handler = async function (event) {
 
     const clientId = process.env.TWITCH_CLIENT_ID;
     const clientSecret = process.env.TWITCH_CLIENT_SECRET;
 
-    const channel = "AthenaKamelot";
+    const url = new URL(
+        event.rawUrl || `https://${event.headers.host}${event.path}`
+    );
+
+    const channel =
+        url.searchParams.get("channel") || "AthenaKamelot";
 
     try {
 
@@ -57,7 +62,9 @@ exports.handler = async function () {
 
             headers: {
                 "Content-Type": "application/json",
-                "Cache-Control": "no-cache"
+                "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
             },
 
             body: JSON.stringify({

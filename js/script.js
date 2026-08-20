@@ -904,8 +904,10 @@ async function checkTwitchStatus() {
 
         try {
 
-            const response = await fetch(
-                "/.netlify/functions/twitch-stream"
+            const response = await fetch(`/.netlify/functions/twitch-stream?channel=${encodeURIComponent(channel)}&_=${Date.now()}`,
+                {
+                    cache: "no-store"
+                }
             );
 
             if (!response.ok) {
