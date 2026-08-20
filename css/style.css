@@ -3202,8 +3202,3 @@ section {
     background: #ff3333;
     box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
 }
-
-/* Efecto de brillo del botón */
-.match-button.is-live:hover {
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.45);
-}
