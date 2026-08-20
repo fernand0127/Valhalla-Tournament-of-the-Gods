@@ -881,5 +881,107 @@ document.addEventListener(
 );
 
 /*==================================================
-                END OF FILE
+                TWITCH LIVE STATUS
 ==================================================*/
+
+async function checkTwitchStatus() {
+
+    const matches = $$(".match-card[data-channel]");
+
+    if (!matches.length) return;
+
+    for (const match of matches) {
+
+        const channel = match.dataset.channel;
+
+        if (!channel) continue;
+
+        const button = $(".match-button", match);
+        const status = $(".status", match);
+        const dot = $(".status-dot", match);
+
+        if (!button || !status || !dot) continue;
+
+        try {
+
+            const response = await fetch(
+                "/.netlify/functions/twitch-stream"
+            );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "No se pudo consultar Twitch"
+                );
+
+            }
+
+            const data = await response.json();
+
+            const isLive =
+                data.live &&
+                data.channel.toLowerCase() ===
+                channel.toLowerCase();
+
+            if (isLive) {
+
+                status.textContent = "EN VIVO";
+
+                status.classList.remove("upcoming");
+
+                status.classList.add("live");
+
+                button.classList.add("is-live");
+
+                dot.classList.add("live");
+
+                button.href =
+                    `https://www.twitch.tv/${channel}`;
+
+            } else {
+
+                status.textContent = "PROXIMAMENTE";
+
+                status.classList.remove("live");
+
+                status.classList.add("upcoming");
+
+                button.classList.remove("is-live");
+
+                dot.classList.remove("live");
+
+                button.href = "#";
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                `Error comprobando Twitch (${channel}):`,
+                error
+            );
+
+        }
+
+    }
+
+}
+
+
+/*==================================================
+                TWITCH AUTO CHECK
+==================================================*/
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        checkTwitchStatus();
+
+        setInterval(
+            checkTwitchStatus,
+            30000
+        );
+
+    }
+);
