@@ -904,7 +904,7 @@ async function checkTwitchStatus() {
 
         try {
 
-            const response = await fetch(`/.netlify/functions/twitch-stream?channel=${encodeURIComponent(channel)}&_=${Date.now()}`,
+            const response = await fetch(`/api/twitch-status?channel=${encodeURIComponent(channel)}`,
                 {
                     cache: "no-store"
                 }
@@ -982,7 +982,7 @@ document.addEventListener(
 
         setInterval(
             checkTwitchStatus,
-            30000
+            60000
         );
 
     }
