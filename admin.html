@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Administrar torneo | Valhalla</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+    <main class="admin-shell">
+        <a class="admin-back" href="/">← Ver página pública</a>
+
+        <section id="loginPanel" class="admin-card admin-login">
+            <p class="admin-eyebrow">PANEL PRIVADO</p>
+            <h1>Administrar torneo</h1>
+            <p>Ingresa la contraseña de administración para actualizar equipos y resultados.</p>
+            <form id="loginForm">
+                <label for="password">Contraseña</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+                <button class="admin-primary" type="submit">Entrar al panel</button>
+                <p id="loginMessage" class="admin-message" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <section id="dashboard" class="admin-dashboard" hidden>
+            <header class="admin-header">
+                <div>
+                    <p class="admin-eyebrow">VALHALLA TOURNAMENT</p>
+                    <h1>Resultados y brackets</h1>
+                </div>
+                <button id="logoutButton" class="admin-secondary" type="button">Cerrar sesión</button>
+            </header>
+
+            <section class="admin-card">
+                <h2>Equipos</h2>
+                <p>Escribe los nombres antes de registrar resultados. Cada cambio se guarda al pulsar el botón final.</p>
+                <div id="teamEditor" class="team-editor"></div>
+            </section>
+
+            <section class="admin-card">
+                <h2>Resultados</h2>
+                <p>Los encuentros futuros se desbloquean cuando sus equipos ya estén definidos. Los cuadros de perdedores reciben solo las derrotas de la primera ronda.</p>
+                <div id="matchEditor" class="match-editor"></div>
+            </section>
+
+            <button id="saveButton" class="admin-primary admin-save" type="button">Guardar cambios públicos</button>
+            <p id="saveMessage" class="admin-message" aria-live="polite"></p>
+        </section>
+    </main>
+    <script src="js/admin.js"></script>
+</body>
+</html>

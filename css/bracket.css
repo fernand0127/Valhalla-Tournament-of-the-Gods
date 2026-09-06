@@ -1211,6 +1211,13 @@
 
 }
 
+/* Los visitantes ven el bracket; las actualizaciones se hacen en /admin. */
+.bracket-readonly .team-card{
+
+    cursor:default;
+
+}
+
 .team-card:active{
 
     transform:scale(.98);
