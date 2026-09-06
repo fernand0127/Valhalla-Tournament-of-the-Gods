@@ -2925,6 +2925,16 @@ section {
 
 .footer-partner { gap: 20px; }
 
+/* Athena y Relay usan imágenes con proporciones distintas. Se les reserva el
+   mismo lienzo para que sus logos y sus botones queden sobre las mismas líneas. */
+.footer-partner > img {
+    width: 270px;
+    height: 110px;
+    margin-bottom: 0;
+    object-fit: contain;
+    object-position: center;
+}
+
 .footer-partner-logo {
     display: grid;
     place-items: center;
@@ -2945,11 +2955,14 @@ section {
 
 @media (max-width: 768px) {
     .footer-content { grid-template-columns: 1fr; gap: 32px; }
-    .footer-athena { order: 2; }
     .footer-center { order: 1; }
     .footer-relay { order: 3; }
 }
 
+@media (max-width: 500px) {
+        .footer-content { grid-template-columns: 1fr; gap: 32px; }
+        .footer-athena { order: 2; }
+}
 
 /*==================================================
                 RESPONSIVE
