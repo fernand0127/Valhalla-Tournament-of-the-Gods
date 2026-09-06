@@ -1,6 +1,26 @@
 const STORAGE_KEY = "current";
 
-const team = (id, name) => ({ id, name });
+const team = (id, name, image = "") => ({ id, name, image });
+
+function defaultScheduleMatch(id, tier, number) {
+    const label = tier === "high" ? "High" : "Low";
+
+    return {
+        id,
+        tier,
+        date: "POR DEFINIR",
+        teamAId: `${tier}-${(number * 2) - 1}`,
+        teamBId: `${tier}-${number * 2}`,
+        streamChannel: "AthenaKamelot"
+    };
+}
+
+function createDefaultSchedule() {
+    return [
+        ...Array.from({ length: 7 }, (_, index) => defaultScheduleMatch(`high-schedule-${index + 1}`, "high", index + 1)),
+        ...Array.from({ length: 4 }, (_, index) => defaultScheduleMatch(`low-schedule-${index + 1}`, "low", index + 1))
+    ];
+}
 
 export function createDefaultState() {
     return {
@@ -13,7 +33,8 @@ export function createDefaultState() {
             ),
             highLoserWildcard: team("high-loser-wildcard", "Equipo de reposición")
         },
-        results: {}
+        results: {},
+        schedule: createDefaultSchedule()
     };
 }
 
@@ -26,7 +47,11 @@ function cleanTeams(input, tier, count) {
             ? rawName.trim().slice(0, 40)
             : "";
 
-        return team(`${tier}-${index + 1}`, name || fallback[index].name);
+        const image = typeof input?.[index]?.image === "string"
+            ? input[index].image.trim().slice(0, 500)
+            : "";
+
+        return team(`${tier}-${index + 1}`, name || fallback[index].name, image);
     });
 }
 
@@ -167,9 +192,16 @@ export function buildBracket(state) {
         bracket.rounds.flatMap(round => round.matches)
     );
 
+    const schedule = state.schedule.map(match => ({
+        ...match,
+        teamA: teamMap.get(match.teamAId) || team("", "Equipo por definir"),
+        teamB: teamMap.get(match.teamBId) || team("", "Equipo por definir")
+    }));
+
     return {
         teams: state.teams,
         results: state.results,
+        schedule,
         brackets,
         matches: allMatches,
         teamMap
@@ -188,11 +220,16 @@ export function sanitizeState(input) {
                 "high-loser-wildcard",
                 typeof input?.teams?.highLoserWildcard?.name === "string"
                     ? input.teams.highLoserWildcard.name.trim().slice(0, 40) || "Equipo de reposición"
-                    : "Equipo de reposición"
+                    : "Equipo de reposición",
+                typeof input?.teams?.highLoserWildcard?.image === "string"
+                    ? input.teams.highLoserWildcard.image.trim().slice(0, 500)
+                    : ""
             )
         },
-        results: {}
+        results: {},
+        schedule: []
     };
+    state.schedule = sanitizeSchedule(input?.schedule, getTeamMap(state));
     const calculated = buildBracket({ ...state, results: rawResults });
 
     calculated.matches.forEach(match => {
@@ -204,6 +241,33 @@ export function sanitizeState(input) {
     });
 
     return state;
+}
+
+function sanitizeSchedule(input, teamMap) {
+    const fallback = createDefaultSchedule();
+
+    return fallback.map(defaultMatch => {
+        const raw = Array.isArray(input)
+            ? input.find(item => item?.id === defaultMatch.id)
+            : null;
+
+        return {
+            id: defaultMatch.id,
+            tier: defaultMatch.tier,
+            date: typeof raw?.date === "string"
+                ? raw.date.trim().slice(0, 30) || defaultMatch.date
+                : defaultMatch.date,
+            teamAId: teamMap.has(raw?.teamAId)
+                ? raw.teamAId
+                : [...teamMap.values()].find(team => team.name === raw?.teamA?.name)?.id || defaultMatch.teamAId,
+            teamBId: teamMap.has(raw?.teamBId)
+                ? raw.teamBId
+                : [...teamMap.values()].find(team => team.name === raw?.teamB?.name)?.id || defaultMatch.teamBId,
+            streamChannel: typeof raw?.streamChannel === "string"
+                ? raw.streamChannel.trim().replace(/^@/, "").slice(0, 50) || "AthenaKamelot"
+                : "AthenaKamelot"
+        };
+    });
 }
 
 export async function loadBracket(env) {

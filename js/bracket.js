@@ -38,7 +38,7 @@ function renderBracket(bracketId, data) {
     }
 
     tournament.classList.add("bracket-readonly");
-    const roundElements = [...tournament.querySelectorAll(".round")];
+    const roundElements = [...tournament.querySelectorAll(":scope > .bracket > .round")];
 
     data.rounds.forEach((round, index) => {
         const roundElement = roundElements[index];

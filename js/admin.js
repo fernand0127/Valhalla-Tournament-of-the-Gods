@@ -4,15 +4,25 @@ let bracketData = null;
 
 const $ = selector => document.querySelector(selector);
 
-function teamInput(team, tier) {
-    const input = document.createElement("input");
-    input.type = "text";
-    input.maxLength = 40;
-    input.value = team.name;
-    input.dataset.teamId = team.id;
-    input.dataset.tier = tier;
-    input.setAttribute("aria-label", `Nombre de ${team.name}`);
-    return input;
+function teamFields(team, tier) {
+    const fields = document.createElement("div");
+    fields.className = "admin-team-fields";
+
+    [["Nombre", "name", team.name, "text", 40], ["Foto (URL)", "image", team.image, "url", 500]].forEach(([labelText, field, value, type, maxLength]) => {
+        const label = document.createElement("label");
+        label.textContent = labelText;
+        const input = document.createElement("input");
+        input.type = type;
+        input.maxLength = maxLength;
+        input.value = value || "";
+        input.dataset.teamId = team.id;
+        input.dataset.tier = tier;
+        input.dataset.teamField = field;
+        label.appendChild(input);
+        fields.appendChild(label);
+    });
+
+    return fields;
 }
 
 function renderTeams(data) {
@@ -26,7 +36,7 @@ function renderTeams(data) {
         heading.textContent = title;
         const grid = document.createElement("div");
         grid.className = "team-grid";
-        data.teams[tier].forEach(team => grid.appendChild(teamInput(team, tier)));
+        data.teams[tier].forEach(team => grid.appendChild(teamFields(team, tier)));
         group.append(heading, grid);
         editor.appendChild(group);
     });
@@ -37,9 +47,71 @@ function renderTeams(data) {
     wildcardHeading.textContent = "Equipo de reposición";
     const wildcardText = document.createElement("p");
     wildcardText.textContent = "Este equipo completa el octavo lugar de Perdedores High Elo.";
-    const wildcardInput = teamInput(data.teams.highLoserWildcard, "highLoserWildcard");
-    wildcardGroup.append(wildcardHeading, wildcardText, wildcardInput);
+    const wildcardFields = teamFields(data.teams.highLoserWildcard, "highLoserWildcard");
+    wildcardGroup.append(wildcardHeading, wildcardText, wildcardFields);
     editor.appendChild(wildcardGroup);
+}
+
+function scheduleField(labelText, value, key, matchId, type = "text") {
+    const label = document.createElement("label");
+    label.className = "schedule-field";
+    label.textContent = labelText;
+    const input = document.createElement("input");
+    input.type = type;
+    input.value = value || "";
+    input.dataset.scheduleId = matchId;
+    input.dataset.scheduleKey = key;
+    input.maxLength = key.includes("image") ? 500 : 50;
+    label.appendChild(input);
+    return label;
+}
+
+function teamSelect(labelText, selectedId, matchId, key, teams) {
+    const label = document.createElement("label");
+    label.className = "schedule-field";
+    label.textContent = labelText;
+    const select = document.createElement("select");
+    select.dataset.scheduleId = matchId;
+    select.dataset.scheduleKey = key;
+
+    teams.forEach(team => {
+        const category = team.id.startsWith("high-") ? "High" : "Low";
+        select.add(new Option(`${category} · ${team.name}`, team.id, false, team.id === selectedId));
+    });
+
+    label.appendChild(select);
+    return label;
+}
+
+function renderSchedule(data) {
+    const editor = $("#scheduleEditor");
+    editor.replaceChildren();
+
+    ["high", "low"].forEach(tier => {
+        const group = document.createElement("section");
+        group.className = "schedule-admin-group";
+        const heading = document.createElement("h3");
+        heading.textContent = tier === "high" ? "High Elo · primera ronda" : "Low Elo · cuartos de final";
+        group.appendChild(heading);
+
+        data.schedule.filter(match => match.tier === tier).forEach((match, index) => {
+            const card = document.createElement("div");
+            card.className = "schedule-admin-card";
+            const title = document.createElement("h4");
+            title.textContent = `Partido ${index + 1}`;
+            const fields = document.createElement("div");
+            fields.className = "schedule-fields";
+            fields.append(
+                scheduleField("Fecha", match.date, "date", match.id),
+                teamSelect("Equipo A", match.teamAId, match.id, "teamAId", [...data.teams.high, ...data.teams.low]),
+                teamSelect("Equipo B", match.teamBId, match.id, "teamBId", [...data.teams.high, ...data.teams.low]),
+                scheduleField("Canal Twitch", match.streamChannel, "streamChannel", match.id)
+            );
+            card.append(title, fields);
+            group.appendChild(card);
+        });
+        editor.appendChild(group);
+    });
 }
 
 function readableMatch(match) {
@@ -102,6 +174,7 @@ function showDashboard(data) {
     $("#loginPanel").hidden = true;
     $("#dashboard").hidden = false;
     renderTeams(data);
+    renderSchedule(data);
     renderMatches(data);
 }
 
@@ -118,11 +191,16 @@ async function fetchBracket() {
 function getFormState() {
     const teams = { high: [], low: [], highLoserWildcard: null };
     document.querySelectorAll("[data-team-id]").forEach(input => {
-        const item = { id: input.dataset.teamId, name: input.value };
+        const bucket = teams[input.dataset.tier];
+        const current = Array.isArray(bucket)
+            ? bucket.find(item => item.id === input.dataset.teamId)
+            : bucket?.id === input.dataset.teamId ? bucket : null;
+        const item = current || { id: input.dataset.teamId, name: "", image: "" };
+        item[input.dataset.teamField] = input.value;
 
         if (input.dataset.tier === "highLoserWildcard") {
             teams.highLoserWildcard = item;
-        } else {
+        } else if (!current) {
             teams[input.dataset.tier].push(item);
         }
     });
@@ -134,7 +212,16 @@ function getFormState() {
         }
     });
 
-    return { teams, results };
+    const schedule = (bracketData?.schedule || []).map(match => structuredClone(match));
+
+    document.querySelectorAll("[data-schedule-id]").forEach(input => {
+        const match = schedule.find(item => item.id === input.dataset.scheduleId);
+        if (!match) return;
+
+        match[input.dataset.scheduleKey] = input.value;
+    });
+
+    return { teams, results, schedule };
 }
 
 $("#loginForm").addEventListener("submit", async event => {

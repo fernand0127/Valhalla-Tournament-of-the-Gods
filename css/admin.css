@@ -61,16 +61,26 @@
 .team-editor { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
 .team-group h3, .match-group h3 { color: #e3c34b; font-family: "Cinzel", serif; }
 .team-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.admin-team-fields { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 12px; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; background: rgba(255,255,255,.02); }
+.admin-team-fields label { margin: 0; color: #d7d1c6; font-size: .82rem; }
+.admin-team-fields input { margin-top: 5px; }
 .match-editor { display: grid; gap: 28px; }
 .round-editor { margin-top: 18px; }
 .round-editor h4 { margin-bottom: 10px; color: #ddd7cb; }
 .match-row { display: grid; grid-template-columns: minmax(0, 1fr) 190px; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, .08); }
 .match-row span { color: #d7d1c6; }
+.schedule-editor { display: grid; gap: 30px; }
+.schedule-admin-group h3 { color: #e3c34b; font-family: "Cinzel", serif; }
+.schedule-admin-card { padding: 18px 0; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+.schedule-admin-card h4 { margin: 0 0 12px; color: #ddd7cb; }
+.schedule-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.schedule-field { margin: 0 !important; color: #d7d1c6; font-size: .85rem; }
+.schedule-field input { margin-top: 6px; }
 
 @media (max-width: 640px) {
     .admin-shell { width: min(100% - 24px, 1120px); padding-top: 28px; }
     .admin-card { padding: 22px; }
     .admin-header, .match-row { grid-template-columns: 1fr; display: grid; }
     .admin-secondary { justify-self: start; }
-    .team-editor, .team-grid { grid-template-columns: 1fr; }
+    .team-editor, .team-grid, .schedule-fields { grid-template-columns: 1fr; }
 }

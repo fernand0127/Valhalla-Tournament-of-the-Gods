@@ -36,9 +36,10 @@ No publiques ni subas esos valores a GitHub.
 
 1. Abre `https://TU-SITIO.pages.dev/admin.html`.
 2. Introduce `ADMIN_PASSWORD`.
-3. Escribe los 14 nombres de High y los 8 de Low.
-4. Elige un ganador por partido y pulsa **Guardar cambios públicos**.
-5. La página pública se actualiza al recargar o, para quien ya la tenga abierta, en aproximadamente un minuto.
+3. Registra los 14 equipos High y los 8 Low una sola vez, con su nombre y URL de foto. Esa lista alimenta la sección pública **Equipos participantes**.
+4. En **Calendario y transmisiones**, escribe la fecha y selecciona Equipo A y Equipo B desde esa lista. El estado cambia automáticamente a **EN VIVO** cuando el canal de Twitch transmite.
+5. Elige un ganador por partido y pulsa **Guardar cambios públicos**.
+6. La página pública se actualiza al recargar o, para quien ya la tenga abierta, en aproximadamente un minuto.
 
 ## Archivos principales
 
