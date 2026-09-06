@@ -1712,3 +1712,8 @@
     transform: translate(var(--layout-x, 0px), var(--layout-y, 0px));
 }
 
+/* El recuadro incluye la corona y el nombre; se mueve como una sola pieza. */
+.tournament > .bracket > .champion > .champion-card {
+    transform: translate(var(--layout-x, 0px), var(--layout-y, 0px));
+}
+

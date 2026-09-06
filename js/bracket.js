@@ -71,6 +71,7 @@ function renderBracket(bracketId, data, layout) {
         round.style.display = "none";
     });
 
+    const championCard = tournament.querySelector(".champion-card");
     const champion = tournament.querySelector(".champion-card h2");
     const championTitle = tournament.querySelector(".champion > h3");
 
@@ -80,6 +81,10 @@ function renderBracket(bracketId, data, layout) {
 
     if (championTitle) {
         applyLayout(championTitle, layout, `title:${bracketId}-champion`);
+    }
+
+    if (championCard) {
+        applyLayout(championCard, layout, `champion:${bracketId}`);
     }
 }
 

@@ -211,6 +211,7 @@ function renderLayout(data) {
             });
         });
         group.appendChild(layoutInputs("Título: Campeones", `title:${bracketId}-champion`, data.layout));
+        group.appendChild(layoutInputs("Recuadro del campeón (corona y nombre)", `champion:${bracketId}`, data.layout));
         editor.appendChild(group);
     });
 }

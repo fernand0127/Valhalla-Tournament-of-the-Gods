@@ -251,7 +251,7 @@ function sanitizeLayout(input) {
 
     return Object.fromEntries(
         Object.entries(input)
-            .filter(([key]) => /^(match|title):[a-z0-9-]+$/i.test(key))
+            .filter(([key]) => /^(match|title|champion):[a-z0-9-]+$/i.test(key))
             .map(([key, position]) => [key, {
                 x: Number.isFinite(Number(position?.x)) ? Math.max(-800, Math.min(800, Number(position.x))) : 0,
                 y: Number.isFinite(Number(position?.y)) ? Math.max(-800, Math.min(800, Number(position.y))) : 0
