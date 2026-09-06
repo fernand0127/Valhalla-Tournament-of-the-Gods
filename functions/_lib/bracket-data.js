@@ -34,7 +34,8 @@ export function createDefaultState() {
             highLoserWildcard: team("high-loser-wildcard", "Equipo de reposición")
         },
         results: {},
-        schedule: createDefaultSchedule()
+        schedule: createDefaultSchedule(),
+        layout: {}
     };
 }
 
@@ -202,6 +203,7 @@ export function buildBracket(state) {
         teams: state.teams,
         results: state.results,
         schedule,
+        layout: state.layout || {},
         brackets,
         matches: allMatches,
         teamMap
@@ -227,7 +229,8 @@ export function sanitizeState(input) {
             )
         },
         results: {},
-        schedule: []
+        schedule: [],
+        layout: sanitizeLayout(input?.layout)
     };
     state.schedule = sanitizeSchedule(input?.schedule, getTeamMap(state));
     const calculated = buildBracket({ ...state, results: rawResults });
@@ -241,6 +244,19 @@ export function sanitizeState(input) {
     });
 
     return state;
+}
+
+function sanitizeLayout(input) {
+    if (!input || typeof input !== "object" || Array.isArray(input)) return {};
+
+    return Object.fromEntries(
+        Object.entries(input)
+            .filter(([key]) => /^(match|title):[a-z0-9-]+$/i.test(key))
+            .map(([key, position]) => [key, {
+                x: Number.isFinite(Number(position?.x)) ? Math.max(-800, Math.min(800, Number(position.x))) : 0,
+                y: Number.isFinite(Number(position?.y)) ? Math.max(-800, Math.min(800, Number(position.y))) : 0
+            }])
+    );
 }
 
 function sanitizeSchedule(input, teamMap) {

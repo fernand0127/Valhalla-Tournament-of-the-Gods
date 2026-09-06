@@ -76,11 +76,18 @@
 .schedule-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .schedule-field { margin: 0 !important; color: #d7d1c6; font-size: .85rem; }
 .schedule-field input { margin-top: 6px; }
+.layout-editor { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.layout-group { padding: 16px; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; }
+.layout-group h3 { margin: 0 0 10px; color: #e3c34b; font-family: "Cinzel", serif; }
+.layout-row { display: grid; grid-template-columns: minmax(0, 1fr) 70px 70px 34px; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+.layout-row span { color: #d7d1c6; font-size: .84rem; }
+.layout-row input { min-height: 36px !important; padding: 6px !important; }
+.layout-row small { color: #8c877e; }
 
 @media (max-width: 640px) {
     .admin-shell { width: min(100% - 24px, 1120px); padding-top: 28px; }
     .admin-card { padding: 22px; }
     .admin-header, .match-row { grid-template-columns: 1fr; display: grid; }
     .admin-secondary { justify-self: start; }
-    .team-editor, .team-grid, .schedule-fields { grid-template-columns: 1fr; }
+    .team-editor, .team-grid, .schedule-fields, .layout-editor { grid-template-columns: 1fr; }
 }

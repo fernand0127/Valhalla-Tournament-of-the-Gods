@@ -169,6 +169,52 @@ function renderMatches(data) {
     });
 }
 
+function layoutInputs(labelText, key, layout) {
+    const row = document.createElement("div");
+    row.className = "layout-row";
+    const label = document.createElement("span");
+    label.textContent = labelText;
+    const x = document.createElement("input");
+    x.type = "number";
+    x.value = layout?.[key]?.x || 0;
+    x.dataset.layoutKey = key;
+    x.dataset.layoutAxis = "x";
+    x.setAttribute("aria-label", `${labelText}, horizontal`);
+    const y = document.createElement("input");
+    y.type = "number";
+    y.value = layout?.[key]?.y || 0;
+    y.dataset.layoutKey = key;
+    y.dataset.layoutAxis = "y";
+    y.setAttribute("aria-label", `${labelText}, vertical`);
+    const axis = document.createElement("small");
+    axis.textContent = "X / Y";
+    row.append(label, x, y, axis);
+    return row;
+}
+
+function renderLayout(data) {
+    const editor = $("#layoutEditor");
+    editor.replaceChildren();
+    const titles = { high: "High Elo", low: "Low Elo", "high-loser": "Perdedores High Elo", "low-loser": "Perdedores Low Elo" };
+
+    Object.entries(data.brackets).forEach(([bracketId, bracket]) => {
+        const group = document.createElement("section");
+        group.className = "layout-group";
+        const heading = document.createElement("h3");
+        heading.textContent = titles[bracketId];
+        group.appendChild(heading);
+
+        bracket.rounds.forEach(round => {
+            group.appendChild(layoutInputs(`Título: ${round.title}`, `title:${round.id}`, data.layout));
+            round.matches.forEach((match, index) => {
+                group.appendChild(layoutInputs(`Partido ${index + 1}: ${match.teamA?.name || "TBD"} vs ${match.teamB?.name || "TBD"}`, `match:${match.id}`, data.layout));
+            });
+        });
+        group.appendChild(layoutInputs("Título: Campeones", `title:${bracketId}-champion`, data.layout));
+        editor.appendChild(group);
+    });
+}
+
 function showDashboard(data) {
     bracketData = data;
     $("#loginPanel").hidden = true;
@@ -176,6 +222,7 @@ function showDashboard(data) {
     renderTeams(data);
     renderSchedule(data);
     renderMatches(data);
+    renderLayout(data);
 }
 
 async function fetchBracket() {
@@ -221,7 +268,14 @@ function getFormState() {
         match[input.dataset.scheduleKey] = input.value;
     });
 
-    return { teams, results, schedule };
+    const layout = {};
+    document.querySelectorAll("[data-layout-key]").forEach(input => {
+        const key = input.dataset.layoutKey;
+        layout[key] ||= { x: 0, y: 0 };
+        layout[key][input.dataset.layoutAxis] = Number(input.value) || 0;
+    });
+
+    return { teams, results, schedule, layout };
 }
 
 $("#loginForm").addEventListener("submit", async event => {

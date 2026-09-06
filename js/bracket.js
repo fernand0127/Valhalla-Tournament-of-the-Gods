@@ -14,8 +14,16 @@ const bracketElement = (tag, className, text) => {
     return element;
 };
 
-function renderMatch(match) {
+function applyLayout(element, layout, key) {
+    const position = layout?.[key] || {};
+    element.style.setProperty("--layout-x", `${Number(position.x) || 0}px`);
+    element.style.setProperty("--layout-y", `${Number(position.y) || 0}px`);
+}
+
+function renderMatch(match, layout) {
     const element = bracketElement("div", "match");
+    element.dataset.matchId = match.id;
+    applyLayout(element, layout, `match:${match.id}`);
 
     [match.teamA, match.teamB].forEach(team => {
         const card = bracketElement("div", "team-card", team?.name || "TBD");
@@ -30,7 +38,7 @@ function renderMatch(match) {
     return element;
 }
 
-function renderBracket(bracketId, data) {
+function renderBracket(bracketId, data, layout) {
     const tournament = document.querySelector(`[data-bracket-id="${bracketId}"]`);
 
     if (!tournament || !data) {
@@ -48,13 +56,15 @@ function renderBracket(bracketId, data) {
         }
 
         const heading = roundElement.querySelector("h3");
+        roundElement.dataset.roundId = round.id;
 
         if (heading) {
             heading.textContent = round.title;
+            applyLayout(heading, layout, `title:${round.id}`);
         }
 
         roundElement.querySelectorAll(".match").forEach(match => match.remove());
-        round.matches.forEach(match => roundElement.appendChild(renderMatch(match)));
+        round.matches.forEach(match => roundElement.appendChild(renderMatch(match, layout)));
     });
 
     roundElements.slice(data.rounds.length).forEach(round => {
@@ -62,9 +72,14 @@ function renderBracket(bracketId, data) {
     });
 
     const champion = tournament.querySelector(".champion-card h2");
+    const championTitle = tournament.querySelector(".champion > h3");
 
     if (champion) {
         champion.textContent = data.champion?.name || "TBD";
+    }
+
+    if (championTitle) {
+        applyLayout(championTitle, layout, `title:${bracketId}-champion`);
     }
 }
 
@@ -79,7 +94,7 @@ async function loadPublicBracket() {
         const data = await response.json();
 
         Object.entries(data.brackets).forEach(([id, bracket]) => {
-            renderBracket(id, bracket);
+            renderBracket(id, bracket, data.layout);
         });
     } catch (error) {
         console.error("Bracket error:", error);
