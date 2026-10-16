@@ -124,10 +124,10 @@ export function buildBracket(state) {
         )
     );
     const highLoserFirst = [
-        createMatch(results, "high-lb-r1-1", loser(highFirst[0]), loser(highFirst[1])),
-        createMatch(results, "high-lb-r1-2", loser(highFirst[2]), loser(highFirst[3])),
-        createMatch(results, "high-lb-r1-3", loser(highFirst[4]), loser(highFirst[5])),
-        createMatch(results, "high-lb-r1-4", loser(highFirst[6]), highLoserSlot)
+        createMatch(results, "high-lb-r1-1", winner(highPass[0]), winner(highPass[1])),
+        createMatch(results, "high-lb-r1-2", winner(highPass[2]), winner(highPass[3])),
+        createMatch(results, "high-lb-r1-3", winner(highPass[4]), winner(highPass[5])),
+        createMatch(results, "high-lb-r1-4", winner(highPass[6]), highLoserSlot)
     ];
     const highLoserSemi = [
         createMatch(results, "high-lb-sf-1", winner(highLoserFirst[0]), winner(highLoserFirst[1])),
