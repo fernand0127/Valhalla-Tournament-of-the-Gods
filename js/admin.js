@@ -147,6 +147,14 @@ function renderPassOpponents(data) {
     });
 }
 
+function renderHighLoserSlot(data) {
+    const select = $("#highLoserSlot");
+    select.replaceChildren(new Option("Sin equipo / TBD", ""));
+    [...data.teams.high, ...data.teams.low, data.teams.highLoserWildcard].forEach(team => {
+        select.add(new Option(team.name, team.id, false, data.highLoserSlotId === team.id));
+    });
+}
+
 function readableMatch(match) {
     return `${match.teamA?.name || "TBD"} vs ${match.teamB?.name || "TBD"}`;
 }
@@ -278,6 +286,7 @@ function showDashboard(data) {
     renderTeams(data);
     renderSchedule(data);
     renderPassOpponents(data);
+    renderHighLoserSlot(data);
     renderMatches(data);
     renderLayout(data);
 }
@@ -321,6 +330,8 @@ function getFormState() {
         if (select.value) passOpponents[select.dataset.passOpponentMatch] = select.value;
     });
 
+    const highLoserSlotId = $("[data-high-loser-slot]")?.value || "";
+
     const schedule = (bracketData?.schedule || []).map(match => structuredClone(match));
 
     document.querySelectorAll("[data-schedule-id]").forEach(input => {
@@ -337,7 +348,7 @@ function getFormState() {
         layout[key][input.dataset.layoutAxis] = Number(input.value) || 0;
     });
 
-    return { teams, results, passOpponents, schedule, layout };
+    return { teams, results, passOpponents, highLoserSlotId, schedule, layout };
 }
 
 $("#loginForm").addEventListener("submit", async event => {

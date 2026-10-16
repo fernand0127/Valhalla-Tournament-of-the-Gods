@@ -35,6 +35,7 @@ export function createDefaultState() {
         },
         results: {},
         passOpponents: {},
+        highLoserSlotId: "",
         schedule: createDefaultSchedule(),
         layout: {}
     };
@@ -85,14 +86,6 @@ function createMatch(results, id, teamA, teamB) {
     };
 }
 
-function createByeMatch(results, id, advancingTeam) {
-    const match = createMatch(results, id, advancingTeam, null);
-    match.teamB = team("bye", "BYE técnico");
-    match.winner = advancingTeam || null;
-    match.loser = null;
-    return match;
-}
-
 function makeRound(id, title, matches) {
     return { id, title, matches };
 }
@@ -114,6 +107,7 @@ export function buildBracket(state) {
         state.passOpponents?.[matchId] === "none"
             ? null
             : teamMap.get(state.passOpponents?.[matchId]) || fallback;
+    const highLoserSlot = teamMap.get(state.highLoserSlotId) || null;
 
     const highFirst = Array.from({ length: 7 }, (_, index) =>
         createMatch(results, `high-r1-${index + 1}`, high[index * 2], high[index * 2 + 1])
@@ -130,10 +124,10 @@ export function buildBracket(state) {
         )
     );
     const highLoserFirst = [
-        createMatch(results, "high-lb-r1-1", winner(highPass[0]), winner(highPass[1])),
-        createMatch(results, "high-lb-r1-2", winner(highPass[2]), winner(highPass[3])),
-        createMatch(results, "high-lb-r1-3", winner(highPass[4]), winner(highPass[5])),
-        createByeMatch(results, "high-lb-r1-4", winner(highPass[6]))
+        createMatch(results, "high-lb-r1-1", loser(highFirst[0]), loser(highFirst[1])),
+        createMatch(results, "high-lb-r1-2", loser(highFirst[2]), loser(highFirst[3])),
+        createMatch(results, "high-lb-r1-3", loser(highFirst[4]), loser(highFirst[5])),
+        createMatch(results, "high-lb-r1-4", loser(highFirst[6]), highLoserSlot)
     ];
     const highLoserSemi = [
         createMatch(results, "high-lb-sf-1", winner(highLoserFirst[0]), winner(highLoserFirst[1])),
@@ -209,7 +203,7 @@ export function buildBracket(state) {
             ],
             access: {
                 id: "high-pass-access",
-                title: "Acceso a perdedores",
+                title: "Resultados del reto",
                 teams: highPass.map(winner)
             }
         },
@@ -254,6 +248,7 @@ export function buildBracket(state) {
         teams: state.teams,
         results: state.results,
         passOpponents: state.passOpponents || {},
+        highLoserSlotId: state.highLoserSlotId || "",
         schedule,
         layout: state.layout || {},
         brackets,
@@ -282,11 +277,13 @@ export function sanitizeState(input) {
         },
         results: {},
         passOpponents: {},
+        highLoserSlotId: "",
         schedule: [],
         layout: sanitizeLayout(input?.layout)
     };
     const teamMap = getTeamMap(state);
     state.passOpponents = sanitizePassOpponents(input?.passOpponents, teamMap);
+    state.highLoserSlotId = teamMap.has(input?.highLoserSlotId) ? input.highLoserSlotId : "";
     state.schedule = sanitizeSchedule(input?.schedule, teamMap);
     const calculated = buildBracket({ ...state, results: rawResults });
 
