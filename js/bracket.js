@@ -38,6 +38,29 @@ function renderMatch(match, layout) {
     return element;
 }
 
+function renderAccess(access, layout, tournament) {
+    const accessElement = tournament.querySelector(".bracket-access");
+
+    if (!accessElement) return;
+
+    const heading = accessElement.querySelector("h3");
+    const card = accessElement.querySelector(".qualification-card");
+
+    if (heading) {
+        heading.textContent = access.title;
+        applyLayout(heading, layout, `title:${access.id}`);
+    }
+
+    if (card) {
+        card.replaceChildren();
+        applyLayout(card, layout, `access:${access.id}`);
+        access.teams.forEach(team => {
+            const entry = bracketElement("div", "team-card qualification-team", team?.name || "TBD");
+            card.appendChild(entry);
+        });
+    }
+}
+
 function renderBracket(bracketId, data, layout) {
     const tournament = document.querySelector(`[data-bracket-id="${bracketId}"]`);
 
@@ -70,6 +93,10 @@ function renderBracket(bracketId, data, layout) {
     roundElements.slice(data.rounds.length).forEach(round => {
         round.style.display = "none";
     });
+
+    if (data.access) {
+        renderAccess(data.access, layout, tournament);
+    }
 
     const championCard = tournament.querySelector(".champion-card");
     const champion = tournament.querySelector(".champion-card h2");

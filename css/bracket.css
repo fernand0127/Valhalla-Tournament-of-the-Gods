@@ -1721,8 +1721,8 @@
    bracket de perdedores. No tiene campeón propio, solo clasificados. */
 [data-bracket-id="high-pass"] > .bracket,
 [data-bracket-id="low-pass"] > .bracket {
-    grid-template-columns: 280px;
-    min-width: 344px;
+    grid-template-columns: repeat(2, 280px);
+    min-width: 650px;
     justify-content: center;
 }
 
@@ -1746,6 +1746,46 @@
 [data-bracket-id="low-pass"] > .bracket > .round .match:nth-child(3) { grid-row: 2; }
 [data-bracket-id="high-pass"] > .bracket > .round .match:nth-child(4) { grid-row: 3; }
 [data-bracket-id="high-pass"] > .bracket > .round .match:nth-child(5) { grid-row: 4; }
+
+/* Panel informativo: lista a los equipos que superaron el pase sin crear
+   otro enfrentamiento ficticio. */
+.bracket-access {
+    position: relative;
+    grid-column: 2;
+    align-self: center;
+    width: 280px;
+    padding-top: 68px;
+}
+
+.bracket-access h3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    font-size: 1.15rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    transform: translate(var(--layout-x, 0px), var(--layout-y, 0px));
+}
+
+.qualification-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bracket-card-gap);
+    padding: 18px;
+    border: 1px solid rgba(212,175,55,.35);
+    border-radius: var(--bracket-radius);
+    background: linear-gradient(135deg, rgba(212,175,55,.10), rgba(255,255,255,.025));
+    box-shadow: 0 0 32px rgba(212,175,55,.08);
+    transform: translate(var(--layout-x, 0px), var(--layout-y, 0px));
+}
+
+.qualification-card .qualification-team {
+    width: 100%;
+}
 
 /* Una vez superado el pase, el cuadro de perdedores comienza ya en
    semifinales (High) o directamente en final (Low). */

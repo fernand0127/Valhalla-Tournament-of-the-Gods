@@ -219,6 +219,10 @@ function renderLayout(data) {
                 group.appendChild(layoutInputs(`Partido ${index + 1}: ${match.teamA?.name || "TBD"} vs ${match.teamB?.name || "TBD"}`, `match:${match.id}`, data.layout));
             });
         });
+        if (bracket.access) {
+            group.appendChild(layoutInputs(`Título: ${bracket.access.title}`, `title:${bracket.access.id}`, data.layout));
+            group.appendChild(layoutInputs("Recuadro: acceso a perdedores", `access:${bracket.access.id}`, data.layout));
+        }
         if ("champion" in bracket) {
             group.appendChild(layoutInputs("Título: Campeones", `title:${bracketId}-champion`, data.layout));
             group.appendChild(layoutInputs("Recuadro del campeón (corona y nombre)", `champion:${bracketId}`, data.layout));

@@ -177,12 +177,22 @@ export function buildBracket(state) {
         "high-pass": {
             rounds: [
                 makeRound("high-pass", "Pase a perdedores", highPass)
-            ]
+            ],
+            access: {
+                id: "high-pass-access",
+                title: "Acceso a perdedores",
+                teams: highPass.map(winner)
+            }
         },
         "low-pass": {
             rounds: [
                 makeRound("low-pass", "Pase a perdedores", lowPass)
-            ]
+            ],
+            access: {
+                id: "low-pass-access",
+                title: "Acceso a perdedores",
+                teams: lowPass.map(winner)
+            }
         },
         "high-loser": {
             rounds: [
@@ -261,7 +271,7 @@ function sanitizeLayout(input) {
 
     return Object.fromEntries(
         Object.entries(input)
-            .filter(([key]) => /^(match|title|champion):[a-z0-9-]+$/i.test(key))
+            .filter(([key]) => /^(match|title|champion|access):[a-z0-9-]+$/i.test(key))
             .map(([key, position]) => [key, {
                 x: Number.isFinite(Number(position?.x)) ? Math.max(-800, Math.min(800, Number(position.x))) : 0,
                 y: Number.isFinite(Number(position?.y)) ? Math.max(-800, Math.min(800, Number(position.y))) : 0
