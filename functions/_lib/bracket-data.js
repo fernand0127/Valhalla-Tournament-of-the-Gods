@@ -106,15 +106,17 @@ export function buildBracket(state) {
         createMatch(results, `high-r1-${index + 1}`, high[index * 2], high[index * 2 + 1])
     );
 
-    const highLoserFirst = [
-        createMatch(results, "high-lb-r1-1", loser(highFirst[0]), loser(highFirst[1])),
-        createMatch(results, "high-lb-r1-2", loser(highFirst[2]), loser(highFirst[3])),
-        createMatch(results, "high-lb-r1-3", loser(highFirst[4]), loser(highFirst[5])),
-        createMatch(results, "high-lb-r1-4", loser(highFirst[6]), state.teams.highLoserWildcard)
+    // Los perdedores de la primera ronda disputan primero el pase al cuadro
+    // de perdedores. Los ganadores de esta fase entran al cuadro principal.
+    const highPass = [
+        createMatch(results, "high-pass-1", loser(highFirst[0]), loser(highFirst[1])),
+        createMatch(results, "high-pass-2", loser(highFirst[2]), loser(highFirst[3])),
+        createMatch(results, "high-pass-3", loser(highFirst[4]), loser(highFirst[5])),
+        createMatch(results, "high-pass-4", loser(highFirst[6]), state.teams.highLoserWildcard)
     ];
     const highLoserSemi = [
-        createMatch(results, "high-lb-sf-1", winner(highLoserFirst[0]), winner(highLoserFirst[1])),
-        createMatch(results, "high-lb-sf-2", winner(highLoserFirst[2]), winner(highLoserFirst[3]))
+        createMatch(results, "high-lb-sf-1", winner(highPass[0]), winner(highPass[1])),
+        createMatch(results, "high-lb-sf-2", winner(highPass[2]), winner(highPass[3]))
     ];
     const highLoserFinal = createMatch(
         results,
@@ -138,15 +140,15 @@ export function buildBracket(state) {
     const lowQuarter = Array.from({ length: 4 }, (_, index) =>
         createMatch(results, `low-qf-${index + 1}`, low[index * 2], low[index * 2 + 1])
     );
-    const lowLoserSemi = [
-        createMatch(results, "low-lb-sf-1", loser(lowQuarter[0]), loser(lowQuarter[1])),
-        createMatch(results, "low-lb-sf-2", loser(lowQuarter[2]), loser(lowQuarter[3]))
+    const lowPass = [
+        createMatch(results, "low-pass-1", loser(lowQuarter[0]), loser(lowQuarter[1])),
+        createMatch(results, "low-pass-2", loser(lowQuarter[2]), loser(lowQuarter[3]))
     ];
     const lowLoserFinal = createMatch(
         results,
         "low-lb-final",
-        winner(lowLoserSemi[0]),
-        winner(lowLoserSemi[1])
+        winner(lowPass[0]),
+        winner(lowPass[1])
     );
     const lowSemi = [
         createMatch(results, "low-sf-1", winner(lowQuarter[0]), winner(lowQuarter[1])),
@@ -172,9 +174,18 @@ export function buildBracket(state) {
             ],
             champion: winner(lowFinal)
         },
+        "high-pass": {
+            rounds: [
+                makeRound("high-pass", "Pase a perdedores", highPass)
+            ]
+        },
+        "low-pass": {
+            rounds: [
+                makeRound("low-pass", "Pase a perdedores", lowPass)
+            ]
+        },
         "high-loser": {
             rounds: [
-                makeRound("high-lb-r1", "Primera ronda", highLoserFirst),
                 makeRound("high-lb-sf", "Semifinales", highLoserSemi),
                 makeRound("high-lb-final", "Final", [highLoserFinal])
             ],
@@ -182,7 +193,6 @@ export function buildBracket(state) {
         },
         "low-loser": {
             rounds: [
-                makeRound("low-lb-sf", "Semifinales", lowLoserSemi),
                 makeRound("low-lb-final", "Final", [lowLoserFinal])
             ],
             champion: winner(lowLoserFinal)

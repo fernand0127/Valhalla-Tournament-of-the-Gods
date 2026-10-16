@@ -125,6 +125,8 @@ function renderMatches(data) {
     const titles = {
         high: "High Elo",
         low: "Low Elo",
+        "high-pass": "Pase a Perdedores High Elo",
+        "low-pass": "Pase a Perdedores Low Elo",
         "high-loser": "Perdedores High Elo",
         "low-loser": "Perdedores Low Elo"
     };
@@ -195,7 +197,14 @@ function layoutInputs(labelText, key, layout) {
 function renderLayout(data) {
     const editor = $("#layoutEditor");
     editor.replaceChildren();
-    const titles = { high: "High Elo", low: "Low Elo", "high-loser": "Perdedores High Elo", "low-loser": "Perdedores Low Elo" };
+    const titles = {
+        high: "High Elo",
+        low: "Low Elo",
+        "high-pass": "Pase a Perdedores High Elo",
+        "low-pass": "Pase a Perdedores Low Elo",
+        "high-loser": "Perdedores High Elo",
+        "low-loser": "Perdedores Low Elo"
+    };
 
     Object.entries(data.brackets).forEach(([bracketId, bracket]) => {
         const group = document.createElement("section");
@@ -210,8 +219,10 @@ function renderLayout(data) {
                 group.appendChild(layoutInputs(`Partido ${index + 1}: ${match.teamA?.name || "TBD"} vs ${match.teamB?.name || "TBD"}`, `match:${match.id}`, data.layout));
             });
         });
-        group.appendChild(layoutInputs("Título: Campeones", `title:${bracketId}-champion`, data.layout));
-        group.appendChild(layoutInputs("Recuadro del campeón (corona y nombre)", `champion:${bracketId}`, data.layout));
+        if ("champion" in bracket) {
+            group.appendChild(layoutInputs("Título: Campeones", `title:${bracketId}-champion`, data.layout));
+            group.appendChild(layoutInputs("Recuadro del campeón (corona y nombre)", `champion:${bracketId}`, data.layout));
+        }
         editor.appendChild(group);
     });
 }
