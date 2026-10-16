@@ -221,7 +221,14 @@ function renderLayout(data) {
         });
         if (bracket.access) {
             group.appendChild(layoutInputs(`Título: ${bracket.access.title}`, `title:${bracket.access.id}`, data.layout));
-            group.appendChild(layoutInputs("Recuadro: acceso a perdedores", `access:${bracket.access.id}`, data.layout));
+            group.appendChild(layoutInputs("Contenedor: acceso a perdedores", `access:${bracket.access.id}`, data.layout));
+            bracket.access.teams.forEach((team, index) => {
+                group.appendChild(layoutInputs(
+                    `Acceso ${index + 1}: ${team?.name || "TBD"}`,
+                    `access:${bracket.access.id}-${index + 1}`,
+                    data.layout
+                ));
+            });
         }
         if ("champion" in bracket) {
             group.appendChild(layoutInputs("Título: Campeones", `title:${bracketId}-champion`, data.layout));

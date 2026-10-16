@@ -1785,6 +1785,7 @@
 
 .qualification-card .qualification-team {
     width: 100%;
+    transform: translate(var(--layout-x, 0px), var(--layout-y, 0px));
 }
 
 /* Una vez superado el pase, el cuadro de perdedores comienza ya en

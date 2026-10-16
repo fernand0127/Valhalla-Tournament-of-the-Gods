@@ -54,8 +54,9 @@ function renderAccess(access, layout, tournament) {
     if (card) {
         card.replaceChildren();
         applyLayout(card, layout, `access:${access.id}`);
-        access.teams.forEach(team => {
+        access.teams.forEach((team, index) => {
             const entry = bracketElement("div", "team-card qualification-team", team?.name || "TBD");
+            applyLayout(entry, layout, `access:${access.id}-${index + 1}`);
             card.appendChild(entry);
         });
     }
