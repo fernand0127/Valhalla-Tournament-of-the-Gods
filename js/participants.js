@@ -30,7 +30,13 @@ async function loadParticipants() {
         const grid = document.querySelector("#teams .teams-grid");
         if (!grid) return;
 
-        grid.replaceChildren(...[...data.teams.high, ...data.teams.low].map(participantCard));
+        const teams = [
+            ...data.teams.high,
+            ...data.teams.low,
+            data.teams.highLoserWildcard
+        ].filter(Boolean);
+
+        grid.replaceChildren(...teams.map(participantCard));
     } catch (error) {
         console.error("Participants error:", error);
     }
