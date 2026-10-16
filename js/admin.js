@@ -103,8 +103,8 @@ function renderSchedule(data) {
             fields.className = "schedule-fields";
             fields.append(
                 scheduleField("Fecha", match.date, "date", match.id),
-                teamSelect("Equipo A", match.teamAId, match.id, "teamAId", [...data.teams.high, ...data.teams.low]),
-                teamSelect("Equipo B", match.teamBId, match.id, "teamBId", [...data.teams.high, ...data.teams.low]),
+                teamSelect("Equipo A", match.teamAId, match.id, "teamAId", [...data.teams.high, ...data.teams.low, data.teams.highLoserWildcard]),
+                teamSelect("Equipo B", match.teamBId, match.id, "teamBId", [...data.teams.high, ...data.teams.low, data.teams.highLoserWildcard]),
                 scheduleField("Canal Twitch", match.streamChannel, "streamChannel", match.id)
             );
             card.append(title, fields);
