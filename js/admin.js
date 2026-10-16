@@ -136,6 +136,7 @@ function renderPassOpponents(data) {
             select.dataset.passOpponentMatch = match.id;
             const automatic = new Option(`Automático: ${match.teamB?.name || "Pendiente"}`, "");
             select.add(automatic);
+            select.add(new Option("Sin rival / sin resultado", "none", false, data.passOpponents?.[match.id] === "none"));
             teams.filter(team => team.id !== match.teamA?.id).forEach(team => {
                 select.add(new Option(team.name, team.id, false, data.passOpponents?.[match.id] === team.id));
             });

@@ -66,9 +66,7 @@ function getTeamMap(state) {
 
 function createMatch(results, id, teamA, teamB) {
     const candidates = [teamA, teamB].filter(Boolean);
-    const selected = candidates.length === 1
-        ? candidates[0].id
-        : candidates.some(item => item.id === results[id])
+    const selected = candidates.some(item => item.id === results[id])
         ? results[id]
         : null;
     const winnerId = selected;
@@ -90,6 +88,8 @@ function createMatch(results, id, teamA, teamB) {
 function createByeMatch(results, id, advancingTeam) {
     const match = createMatch(results, id, advancingTeam, null);
     match.teamB = team("bye", "BYE técnico");
+    match.winner = advancingTeam || null;
+    match.loser = null;
     return match;
 }
 
@@ -111,7 +111,9 @@ export function buildBracket(state) {
     const low = state.teams.low;
     const results = state.results || {};
     const selectedPassOpponent = (matchId, fallback) =>
-        teamMap.get(state.passOpponents?.[matchId]) || fallback;
+        state.passOpponents?.[matchId] === "none"
+            ? null
+            : teamMap.get(state.passOpponents?.[matchId]) || fallback;
 
     const highFirst = Array.from({ length: 7 }, (_, index) =>
         createMatch(results, `high-r1-${index + 1}`, high[index * 2], high[index * 2 + 1])
@@ -291,7 +293,9 @@ export function sanitizeState(input) {
     calculated.matches.forEach(match => {
         const submittedWinner = rawResults[match.id];
 
-        if (match.candidates.some(item => item.id === submittedWinner)) {
+        // Un solo equipo visible aún no es una victoria: se conserva vacío
+        // hasta que el administrador tenga dos rivales y registre el resultado.
+        if (match.candidates.length === 2 && match.candidates.some(item => item.id === submittedWinner)) {
             state.results[match.id] = submittedWinner;
         }
     });
@@ -308,7 +312,7 @@ function sanitizePassOpponents(input, teamMap) {
 
     return Object.fromEntries(
         allowedIds
-            .filter(id => teamMap.has(input?.[id]))
+            .filter(id => input?.[id] === "none" || teamMap.has(input?.[id]))
             .map(id => [id, input[id]])
     );
 }
