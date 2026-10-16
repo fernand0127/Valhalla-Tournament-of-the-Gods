@@ -34,6 +34,7 @@ export function createDefaultState() {
             highLoserWildcard: team("high-loser-wildcard", "Equipo de reposición")
         },
         results: {},
+        passOpponents: {},
         schedule: createDefaultSchedule(),
         layout: {}
     };
@@ -101,6 +102,8 @@ export function buildBracket(state) {
     const high = state.teams.high;
     const low = state.teams.low;
     const results = state.results || {};
+    const selectedPassOpponent = (matchId, fallback) =>
+        teamMap.get(state.passOpponents?.[matchId]) || fallback;
 
     const highFirst = Array.from({ length: 7 }, (_, index) =>
         createMatch(results, `high-r1-${index + 1}`, high[index * 2], high[index * 2 + 1])
@@ -109,10 +112,10 @@ export function buildBracket(state) {
     // Los perdedores de la primera ronda disputan primero el pase al cuadro
     // de perdedores. Los ganadores de esta fase entran al cuadro principal.
     const highPass = [
-        createMatch(results, "high-pass-1", loser(highFirst[0]), loser(highFirst[1])),
-        createMatch(results, "high-pass-2", loser(highFirst[2]), loser(highFirst[3])),
-        createMatch(results, "high-pass-3", loser(highFirst[4]), loser(highFirst[5])),
-        createMatch(results, "high-pass-4", loser(highFirst[6]), state.teams.highLoserWildcard)
+        createMatch(results, "high-pass-1", loser(highFirst[0]), selectedPassOpponent("high-pass-1", loser(highFirst[1]))),
+        createMatch(results, "high-pass-2", loser(highFirst[2]), selectedPassOpponent("high-pass-2", loser(highFirst[3]))),
+        createMatch(results, "high-pass-3", loser(highFirst[4]), selectedPassOpponent("high-pass-3", loser(highFirst[5]))),
+        createMatch(results, "high-pass-4", loser(highFirst[6]), selectedPassOpponent("high-pass-4", state.teams.highLoserWildcard))
     ];
     const highLoserSemi = [
         createMatch(results, "high-lb-sf-1", winner(highPass[0]), winner(highPass[1])),
@@ -141,8 +144,8 @@ export function buildBracket(state) {
         createMatch(results, `low-qf-${index + 1}`, low[index * 2], low[index * 2 + 1])
     );
     const lowPass = [
-        createMatch(results, "low-pass-1", loser(lowQuarter[0]), loser(lowQuarter[1])),
-        createMatch(results, "low-pass-2", loser(lowQuarter[2]), loser(lowQuarter[3]))
+        createMatch(results, "low-pass-1", loser(lowQuarter[0]), selectedPassOpponent("low-pass-1", loser(lowQuarter[1]))),
+        createMatch(results, "low-pass-2", loser(lowQuarter[2]), selectedPassOpponent("low-pass-2", loser(lowQuarter[3])))
     ];
     const lowLoserFinal = createMatch(
         results,
@@ -222,6 +225,7 @@ export function buildBracket(state) {
     return {
         teams: state.teams,
         results: state.results,
+        passOpponents: state.passOpponents || {},
         schedule,
         layout: state.layout || {},
         brackets,
@@ -249,10 +253,13 @@ export function sanitizeState(input) {
             )
         },
         results: {},
+        passOpponents: {},
         schedule: [],
         layout: sanitizeLayout(input?.layout)
     };
-    state.schedule = sanitizeSchedule(input?.schedule, getTeamMap(state));
+    const teamMap = getTeamMap(state);
+    state.passOpponents = sanitizePassOpponents(input?.passOpponents, teamMap);
+    state.schedule = sanitizeSchedule(input?.schedule, teamMap);
     const calculated = buildBracket({ ...state, results: rawResults });
 
     calculated.matches.forEach(match => {
@@ -264,6 +271,19 @@ export function sanitizeState(input) {
     });
 
     return state;
+}
+
+function sanitizePassOpponents(input, teamMap) {
+    const allowedIds = [
+        "high-pass-1", "high-pass-2", "high-pass-3", "high-pass-4",
+        "low-pass-1", "low-pass-2"
+    ];
+
+    return Object.fromEntries(
+        allowedIds
+            .filter(id => teamMap.has(input?.[id]))
+            .map(id => [id, input[id]])
+    );
 }
 
 function sanitizeLayout(input) {

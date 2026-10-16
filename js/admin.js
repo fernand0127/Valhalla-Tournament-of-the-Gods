@@ -114,6 +114,38 @@ function renderSchedule(data) {
     });
 }
 
+function renderPassOpponents(data) {
+    const editor = $("#passOpponentEditor");
+    editor.replaceChildren();
+    const teams = [...data.teams.high, ...data.teams.low, data.teams.highLoserWildcard];
+    const labels = { "high-pass": "Pase High Elo", "low-pass": "Pase Low Elo" };
+
+    ["high-pass", "low-pass"].forEach(bracketId => {
+        const group = document.createElement("section");
+        group.className = "pass-opponent-group";
+        const heading = document.createElement("h3");
+        heading.textContent = labels[bracketId];
+        group.appendChild(heading);
+
+        data.brackets[bracketId].rounds[0].matches.forEach((match, index) => {
+            const row = document.createElement("label");
+            row.className = "pass-opponent-row";
+            const text = document.createElement("span");
+            text.textContent = `Pase ${index + 1}: ${match.teamA?.name || "Pendiente"} vs`;
+            const select = document.createElement("select");
+            select.dataset.passOpponentMatch = match.id;
+            const automatic = new Option(`Automático: ${match.teamB?.name || "Pendiente"}`, "");
+            select.add(automatic);
+            teams.filter(team => team.id !== match.teamA?.id).forEach(team => {
+                select.add(new Option(team.name, team.id, false, data.passOpponents?.[match.id] === team.id));
+            });
+            row.append(text, select);
+            group.appendChild(row);
+        });
+        editor.appendChild(group);
+    });
+}
+
 function readableMatch(match) {
     return `${match.teamA?.name || "TBD"} vs ${match.teamB?.name || "TBD"}`;
 }
@@ -244,6 +276,7 @@ function showDashboard(data) {
     $("#dashboard").hidden = false;
     renderTeams(data);
     renderSchedule(data);
+    renderPassOpponents(data);
     renderMatches(data);
     renderLayout(data);
 }
@@ -282,6 +315,11 @@ function getFormState() {
         }
     });
 
+    const passOpponents = {};
+    document.querySelectorAll("[data-pass-opponent-match]").forEach(select => {
+        if (select.value) passOpponents[select.dataset.passOpponentMatch] = select.value;
+    });
+
     const schedule = (bracketData?.schedule || []).map(match => structuredClone(match));
 
     document.querySelectorAll("[data-schedule-id]").forEach(input => {
@@ -298,7 +336,7 @@ function getFormState() {
         layout[key][input.dataset.layoutAxis] = Number(input.value) || 0;
     });
 
-    return { teams, results, schedule, layout };
+    return { teams, results, passOpponents, schedule, layout };
 }
 
 $("#loginForm").addEventListener("submit", async event => {

@@ -70,6 +70,10 @@
 .match-row { display: grid; grid-template-columns: minmax(0, 1fr) 190px; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, .08); }
 .match-row span { color: #d7d1c6; }
 .schedule-editor { display: grid; gap: 30px; }
+.pass-opponent-editor { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+.pass-opponent-group h3 { color: #e3c34b; font-family: "Cinzel", serif; }
+.pass-opponent-row { display: grid !important; grid-template-columns: minmax(0, 1fr) 220px; align-items: center; gap: 14px; padding: 12px 0; margin: 0 !important; border-bottom: 1px solid rgba(255,255,255,.08); }
+.pass-opponent-row span { color: #d7d1c6; }
 .schedule-admin-group h3 { color: #e3c34b; font-family: "Cinzel", serif; }
 .schedule-admin-card { padding: 18px 0; border-bottom: 1px solid rgba(255, 255, 255, .08); }
 .schedule-admin-card h4 { margin: 0 0 12px; color: #ddd7cb; }
@@ -89,5 +93,6 @@
     .admin-card { padding: 22px; }
     .admin-header, .match-row { grid-template-columns: 1fr; display: grid; }
     .admin-secondary { justify-self: start; }
-    .team-editor, .team-grid, .schedule-fields, .layout-editor { grid-template-columns: 1fr; }
+    .team-editor, .team-grid, .schedule-fields, .layout-editor, .pass-opponent-editor { grid-template-columns: 1fr; }
+    .pass-opponent-row { grid-template-columns: 1fr; }
 }
