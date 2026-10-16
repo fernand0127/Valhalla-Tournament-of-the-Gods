@@ -1828,3 +1828,54 @@
     align-self: center;
 }
 
+/* Siete perdedores High y cuatro Low disputan el pase. */
+[data-bracket-id="high-pass"] > .bracket { min-height: 1520px; }
+[data-bracket-id="low-pass"] > .bracket { min-height: 910px; }
+[data-bracket-id="high-pass"] > .bracket > .round { grid-template-rows: repeat(7, 164px); }
+[data-bracket-id="low-pass"] > .bracket > .round { grid-template-rows: repeat(4, 164px); }
+[data-bracket-id="high-pass"] > .bracket > .round .match:nth-child(5),
+[data-bracket-id="low-pass"] > .bracket > .round .match:nth-child(5) { grid-row: 4; }
+[data-bracket-id="high-pass"] > .bracket > .round .match:nth-child(6) { grid-row: 5; }
+[data-bracket-id="high-pass"] > .bracket > .round .match:nth-child(7) { grid-row: 6; }
+[data-bracket-id="high-pass"] > .bracket > .round .match:nth-child(8) { grid-row: 7; }
+
+/* Los clasificados vuelven a formar una llave completa: High 8 plazas
+   (la séptima recibe BYE técnico) y Low 4 plazas. */
+[data-bracket-id="high-loser"] > .bracket {
+    grid-template-columns: repeat(3, 280px) 340px;
+    min-width: 1232px;
+    min-height: 910px;
+}
+[data-bracket-id="high-loser"] > .bracket > .round {
+    display: grid;
+    grid-template-rows: repeat(4, 164px);
+    align-items: center;
+    align-content: start;
+    row-gap: 42px;
+}
+[data-bracket-id="high-loser"] > .bracket > .round:nth-child(1) .match:nth-child(2) { grid-row: 1; }
+[data-bracket-id="high-loser"] > .bracket > .round:nth-child(1) .match:nth-child(3) { grid-row: 2; }
+[data-bracket-id="high-loser"] > .bracket > .round:nth-child(1) .match:nth-child(4) { grid-row: 3; }
+[data-bracket-id="high-loser"] > .bracket > .round:nth-child(1) .match:nth-child(5) { grid-row: 4; }
+[data-bracket-id="high-loser"] > .bracket > .round:nth-child(2) .match:nth-child(2) { grid-row: 1 / 3; }
+[data-bracket-id="high-loser"] > .bracket > .round:nth-child(2) .match:nth-child(3) { grid-row: 3 / 5; }
+[data-bracket-id="high-loser"] > .bracket > .round:nth-child(3) .match:nth-child(2) { grid-row: 1 / 5; }
+[data-bracket-id="high-loser"] > .bracket > .champion { grid-column: 4; grid-row: 1; }
+
+[data-bracket-id="low-loser"] > .bracket {
+    grid-template-columns: repeat(2, 280px) 340px;
+    min-width: 952px;
+    min-height: 560px;
+}
+[data-bracket-id="low-loser"] > .bracket > .round {
+    display: grid;
+    grid-template-rows: repeat(2, 164px);
+    align-items: center;
+    align-content: start;
+    row-gap: 42px;
+}
+[data-bracket-id="low-loser"] > .bracket > .round:nth-child(1) .match:nth-child(2) { grid-row: 1; }
+[data-bracket-id="low-loser"] > .bracket > .round:nth-child(1) .match:nth-child(3) { grid-row: 2; }
+[data-bracket-id="low-loser"] > .bracket > .round:nth-child(2) .match:nth-child(2) { grid-row: 1 / 3; }
+[data-bracket-id="low-loser"] > .bracket > .champion { grid-column: 3; grid-row: 1; }
+
