@@ -203,7 +203,7 @@ export function buildBracket(state) {
             ],
             access: {
                 id: "high-pass-access",
-                title: "Resultados del reto",
+                title: "Acceso a perdedores",
                 teams: highPass.map(winner)
             }
         },
