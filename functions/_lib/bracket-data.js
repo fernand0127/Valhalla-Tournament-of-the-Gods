@@ -104,7 +104,7 @@ function getTeamMap(state) {
     );
 }
 
-function createMatch(results, id, teamA, teamB) {
+function createMatch(results, id, teamA, teamB, placeholders = {}) {
     const candidates = [teamA, teamB].filter(Boolean);
     const selected = candidates.some(item => item.id === results[id])
         ? results[id]
@@ -119,6 +119,8 @@ function createMatch(results, id, teamA, teamB) {
         id,
         teamA: teamA || null,
         teamB: teamB || null,
+        placeholderA: placeholders.teamA || "TBD",
+        placeholderB: placeholders.teamB || "TBD",
         winner,
         loser,
         candidates
@@ -154,7 +156,9 @@ export function buildBracket(state) {
 
     // Los perdedores de la primera ronda disputan primero el pase al cuadro
     // de perdedores. Los ganadores de esta fase entran al cuadro principal.
-    const highPass = highFirst.map((match, index) =>
+    // El séptimo encuentro de High queda como descalificación en el cuadro
+    // principal; sus equipos no disputan el Pase a Perdedores.
+    const highPass = highFirst.slice(0, 6).map((match, index) =>
         createMatch(
             results,
             `high-pass-${index + 1}`,
@@ -183,7 +187,7 @@ export function buildBracket(state) {
         createMatch(results, "high-qf-1", winner(highFirst[0]), winner(highFirst[1])),
         createMatch(results, "high-qf-2", winner(highFirst[2]), winner(highFirst[3])),
         createMatch(results, "high-qf-3", winner(highFirst[4]), winner(highFirst[5])),
-        createMatch(results, "high-qf-4", winner(highFirst[6]), winner(highLoserFinal))
+        createMatch(results, "high-qf-4", winner(highFirst[6]), winner(highLoserFinal), { teamB: "LBW" })
     ];
     const highSemi = [
         createMatch(results, "high-sf-1", winner(highQuarter[0]), winner(highQuarter[1])),
@@ -227,7 +231,7 @@ export function buildBracket(state) {
     );
     const lowSemi = [
         createMatch(results, "low-sf-1", winner(lowQuarter[0]), winner(lowQuarter[1])),
-        createMatch(results, "low-sf-2", winner(lowQuarter[2]), winner(lowLoserFinal))
+        createMatch(results, "low-sf-2", winner(lowQuarter[2]), winner(lowLoserFinal), { teamB: "LBW" })
     ];
     const lowFinal = createMatch(results, "low-final", winner(lowSemi[0]), winner(lowSemi[1]));
 
@@ -362,7 +366,7 @@ export function sanitizeState(input) {
 function sanitizePassOpponents(input, teamMap) {
     const allowedIds = [
         "high-pass-1", "high-pass-2", "high-pass-3", "high-pass-4",
-        "high-pass-5", "high-pass-6", "high-pass-7",
+        "high-pass-5", "high-pass-6",
         "low-pass-1", "low-pass-2", "low-pass-3"
     ];
 

@@ -25,8 +25,9 @@ function renderMatch(match, layout) {
     element.dataset.matchId = match.id;
     applyLayout(element, layout, `match:${match.id}`);
 
-    [match.teamA, match.teamB].forEach(team => {
-        const card = bracketElement("div", "team-card", team?.name || "TBD");
+    [match.teamA, match.teamB].forEach((team, index) => {
+        const placeholder = index === 0 ? match.placeholderA : match.placeholderB;
+        const card = bracketElement("div", "team-card", team?.name || placeholder || "TBD");
 
         if (team?.id && team.id === match.winner?.id) {
             card.classList.add("winner");
