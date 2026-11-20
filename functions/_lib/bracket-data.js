@@ -270,7 +270,9 @@ export function buildBracket(state) {
             access: {
                 id: "low-pass-access",
                 title: "Acceso a perdedores",
-                teams: lowLoserFinalists
+                // Conserva visibles las dos plazas aunque aún no existan
+                // resultados del Pase Low.
+                teams: [...lowLoserFinalists, ...Array(Math.max(0, 2 - lowLoserFinalists.length)).fill(null)]
             }
         },
         "high-loser": {
