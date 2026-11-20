@@ -2,6 +2,42 @@ const STORAGE_KEY = "current";
 
 const team = (id, name, image = "", imageSize = 100) => ({ id, name, image, imageSize });
 
+// Estos logos forman parte del sitio publicado. Así nunca dependen de una
+// sesión de Google, un enlace temporal de Discord o el dispositivo del admin.
+const LOCAL_TEAM_IMAGES = {
+    "high-1": "/img/teams/el-rifle-de-america.png",
+    "high-2": "/img/teams/patrulla-x.png",
+    "high-3": "/img/teams/cucharas-de-jeff.png",
+    "high-4": "/img/teams/sangheilis.png",
+    "high-5": "/img/teams/small-potatoes.png",
+    "high-6": "/img/teams/ositos-carinositos.png",
+    "high-7": "/img/teams/lobos-de-bajo-presupuesto.png",
+    "high-8": "/img/teams/papu-rivals.png",
+    "high-9": "/img/teams/team-aura.png",
+    "high-10": "/img/teams/berry-baddies.png",
+    "high-11": "/img/teams/lobos-de-bajo-presupuesto.png",
+    "high-12": "/img/teams/no-name.png",
+    "high-13": "/img/teams/womp-womp.png",
+    "low-1": "/img/teams/noctua-owls.png",
+    "low-2": "/img/teams/los-4-fantasticos.png",
+    "low-3": "/img/teams/fieles-deudores-de-coppel.png",
+    "low-4": "/img/teams/omegamblers.png",
+    "low-5": "/img/teams/isla-tortuga.png",
+    "low-6": "/img/teams/wakanda-de-temu.png",
+    "high-loser-wildcard": "/img/teams/furritos-de-leche.png"
+};
+
+function teamImage(id, value) {
+    const image = typeof value === "string" ? value.trim().slice(0, 500) : "";
+    const isPreviousExternalLogo = /^(?:https?:\/\/)?(?:lh3\.google\.com|drive\.google\.com|driveusercontent\.google\.com|media\.discordapp\.net)/i.test(image);
+
+    // Conserva cualquier URL nueva que el administrador agregue en el futuro,
+    // pero reemplaza los enlaces antiguos por los archivos locales estables.
+    return LOCAL_TEAM_IMAGES[id] && (!image || isPreviousExternalLogo)
+        ? LOCAL_TEAM_IMAGES[id]
+        : image;
+}
+
 function defaultScheduleMatch(id, tier, number) {
     const label = tier === "high" ? "High" : "Low";
 
@@ -51,9 +87,7 @@ function cleanTeams(input, tier, count) {
             ? rawName.trim().slice(0, 40)
             : "";
 
-        const image = typeof input?.[index]?.image === "string"
-            ? input[index].image.trim().slice(0, 500)
-            : "";
+        const image = teamImage(`${tier}-${index + 1}`, input?.[index]?.image);
 
         const imageSize = Number.isFinite(Number(input?.[index]?.imageSize))
             ? Math.max(40, Math.min(180, Number(input[index].imageSize)))
@@ -290,9 +324,7 @@ export function sanitizeState(input) {
                 typeof input?.teams?.highLoserWildcard?.name === "string"
                     ? input.teams.highLoserWildcard.name.trim().slice(0, 40) || "Equipo de reposición"
                     : "Equipo de reposición",
-                typeof input?.teams?.highLoserWildcard?.image === "string"
-                    ? input.teams.highLoserWildcard.image.trim().slice(0, 500)
-                    : "",
+                teamImage("high-loser-wildcard", input?.teams?.highLoserWildcard?.image),
                 Number.isFinite(Number(input?.teams?.highLoserWildcard?.imageSize))
                     ? Math.max(40, Math.min(180, Number(input.teams.highLoserWildcard.imageSize)))
                     : 100
