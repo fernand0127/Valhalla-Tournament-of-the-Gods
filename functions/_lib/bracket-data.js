@@ -1,6 +1,6 @@
 const STORAGE_KEY = "current";
 
-const team = (id, name, image = "") => ({ id, name, image });
+const team = (id, name, image = "", imageSize = 100) => ({ id, name, image, imageSize });
 
 function defaultScheduleMatch(id, tier, number) {
     const label = tier === "high" ? "High" : "Low";
@@ -54,7 +54,11 @@ function cleanTeams(input, tier, count) {
             ? input[index].image.trim().slice(0, 500)
             : "";
 
-        return team(`${tier}-${index + 1}`, name || fallback[index].name, image);
+        const imageSize = Number.isFinite(Number(input?.[index]?.imageSize))
+            ? Math.max(40, Math.min(180, Number(input[index].imageSize)))
+            : 100;
+
+        return team(`${tier}-${index + 1}`, name || fallback[index].name, image, imageSize);
     });
 }
 
@@ -240,8 +244,8 @@ export function buildBracket(state) {
 
     const schedule = state.schedule.map(match => ({
         ...match,
-        teamA: teamMap.get(match.teamAId) || team("", "Equipo por definir"),
-        teamB: teamMap.get(match.teamBId) || team("", "Equipo por definir")
+        teamA: teamMap.get(match.teamAId) || null,
+        teamB: teamMap.get(match.teamBId) || null
     }));
 
     return {
@@ -272,7 +276,10 @@ export function sanitizeState(input) {
                     : "Equipo de reposición",
                 typeof input?.teams?.highLoserWildcard?.image === "string"
                     ? input.teams.highLoserWildcard.image.trim().slice(0, 500)
-                    : ""
+                    : "",
+                Number.isFinite(Number(input?.teams?.highLoserWildcard?.imageSize))
+                    ? Math.max(40, Math.min(180, Number(input.teams.highLoserWildcard.imageSize)))
+                    : 100
             )
         },
         results: {},
@@ -341,12 +348,16 @@ function sanitizeSchedule(input, teamMap) {
             date: typeof raw?.date === "string"
                 ? raw.date.trim().slice(0, 30) || defaultMatch.date
                 : defaultMatch.date,
-            teamAId: teamMap.has(raw?.teamAId)
-                ? raw.teamAId
-                : [...teamMap.values()].find(team => team.name === raw?.teamA?.name)?.id || defaultMatch.teamAId,
-            teamBId: teamMap.has(raw?.teamBId)
-                ? raw.teamBId
-                : [...teamMap.values()].find(team => team.name === raw?.teamB?.name)?.id || defaultMatch.teamBId,
+            teamAId: raw?.teamAId === ""
+                ? ""
+                : teamMap.has(raw?.teamAId)
+                    ? raw.teamAId
+                    : [...teamMap.values()].find(team => team.name === raw?.teamA?.name)?.id || defaultMatch.teamAId,
+            teamBId: raw?.teamBId === ""
+                ? ""
+                : teamMap.has(raw?.teamBId)
+                    ? raw.teamBId
+                    : [...teamMap.values()].find(team => team.name === raw?.teamB?.name)?.id || defaultMatch.teamBId,
             streamChannel: typeof raw?.streamChannel === "string"
                 ? raw.streamChannel.trim().replace(/^@/, "").slice(0, 50) || "AthenaKamelot"
                 : "AthenaKamelot"

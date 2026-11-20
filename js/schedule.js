@@ -14,6 +14,7 @@ function teamView(team) {
     const image = document.createElement("img");
     image.alt = `Logo de ${team.name}`;
     image.loading = "lazy";
+    image.style.setProperty("--team-logo-size", `${(Number(team.imageSize) || 100) / 100}`);
 
     if (team.image) {
         image.src = team.image;
@@ -33,20 +34,34 @@ function teamView(team) {
 
 function matchView(match) {
     const card = scheduleElement("article", "match-card");
-    card.dataset.channel = match.streamChannel;
+    card.dataset.channel = match.streamChannel || "";
     const date = scheduleElement("div", "match-date");
     date.appendChild(scheduleElement("span", "match-hour", match.date));
 
     const teams = scheduleElement("div", "match-teams");
-    teams.append(teamView(match.teamA), scheduleElement("div", "vs", "VS"), teamView(match.teamB));
+    const isUpcomingOnly = !match.teamA || !match.teamB;
+    if (isUpcomingOnly) card.dataset.channel = "";
+    if (isUpcomingOnly) {
+        teams.classList.add("match-upcoming-only");
+        teams.append(scheduleElement("strong", "", "PRÓXIMAMENTE"));
+    } else {
+        teams.append(teamView(match.teamA), scheduleElement("div", "vs", "VS"), teamView(match.teamB));
+    }
 
     const statusBox = scheduleElement("div", "match-status");
     const button = document.createElement("a");
     button.className = "match-status match-button";
     button.target = "_blank";
     button.rel = "noopener noreferrer";
-    button.href = `https://www.twitch.tv/${encodeURIComponent(match.streamChannel)}`;
-    button.setAttribute("aria-label", `Ver ${match.teamA.name} contra ${match.teamB.name} en Twitch`);
+    if (match.streamChannel && !isUpcomingOnly) {
+        button.href = `https://www.twitch.tv/${encodeURIComponent(match.streamChannel)}`;
+        button.setAttribute("aria-label", "Ver partido en Twitch");
+    } else {
+        button.removeAttribute("target");
+        button.removeAttribute("rel");
+        button.removeAttribute("href");
+        button.setAttribute("aria-label", "Partido próximamente");
+    }
     button.append(scheduleElement("span", "status-dot"), scheduleElement("span", "status upcoming", "PRÓXIMAMENTE"));
     statusBox.appendChild(button);
     card.append(date, teams, statusBox);

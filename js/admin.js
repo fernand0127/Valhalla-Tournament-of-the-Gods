@@ -8,12 +8,17 @@ function teamFields(team, tier) {
     const fields = document.createElement("div");
     fields.className = "admin-team-fields";
 
-    [["Nombre", "name", team.name, "text", 40], ["Foto (URL)", "image", team.image, "url", 500]].forEach(([labelText, field, value, type, maxLength]) => {
+    [["Nombre", "name", team.name, "text", 40], ["Foto (URL)", "image", team.image, "url", 500], ["Tamaño del logo (%)", "imageSize", team.imageSize || 100, "number", null]].forEach(([labelText, field, value, type, maxLength]) => {
         const label = document.createElement("label");
         label.textContent = labelText;
         const input = document.createElement("input");
         input.type = type;
-        input.maxLength = maxLength;
+        if (maxLength) input.maxLength = maxLength;
+        if (field === "imageSize") {
+            input.min = "40";
+            input.max = "180";
+            input.step = "1";
+        }
         input.value = value || "";
         input.dataset.teamId = team.id;
         input.dataset.tier = tier;
@@ -74,8 +79,10 @@ function teamSelect(labelText, selectedId, matchId, key, teams) {
     select.dataset.scheduleId = matchId;
     select.dataset.scheduleKey = key;
 
+    select.add(new Option("Próximamente / sin equipos", "", false, !selectedId));
+
     teams.forEach(team => {
-        const category = team.id.startsWith("high-") ? "High" : "Low";
+        const category = team.id === "high-loser-wildcard" ? "Reposición" : team.id.startsWith("high-") ? "High" : "Low";
         select.add(new Option(`${category} · ${team.name}`, team.id, false, team.id === selectedId));
     });
 

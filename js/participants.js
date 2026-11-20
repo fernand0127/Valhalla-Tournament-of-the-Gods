@@ -3,6 +3,7 @@
 function participantCard(team) {
     const card = document.createElement("article");
     card.className = "team-item";
+    card.style.setProperty("--team-logo-size", `${(Number(team.imageSize) || 100) / 100}`);
     const image = document.createElement("img");
     image.alt = team.image ? `Logo de ${team.name}` : "";
     image.loading = "lazy";
