@@ -1908,12 +1908,12 @@
 }
 [data-bracket-id="low-pass"] > .bracket > .round .match:nth-child(4) { grid-row: 3; }
 
-/* Tres ganadores en Perdedores Low: eliminatoria entre dos, y final contra
-   el tercero. El campeón de aquí entra a la segunda semifinal de Low. */
+/* Perdedores Low tiene una sola final; su campeón entra a la segunda
+   semifinal del cuadro Low principal. */
 [data-bracket-id="low-loser"] > .bracket {
-    grid-template-columns: repeat(2, 280px) 340px;
-    min-width: 952px;
-    min-height: 360px;
+    grid-template-columns: 280px 340px;
+    min-width: 646px;
+    min-height: 320px;
 }
 [data-bracket-id="low-loser"] > .bracket > .round {
     display: grid;
@@ -1921,7 +1921,6 @@
     align-items: center;
     align-content: start;
 }
-[data-bracket-id="low-loser"] > .bracket > .round:nth-child(1) .match:nth-child(2),
-[data-bracket-id="low-loser"] > .bracket > .round:nth-child(2) .match:nth-child(2) { grid-row: 1; }
-[data-bracket-id="low-loser"] > .bracket > .champion { grid-column: 3; grid-row: 1; }
+[data-bracket-id="low-loser"] > .bracket > .round:nth-child(1) .match:nth-child(2) { grid-row: 1; }
+[data-bracket-id="low-loser"] > .bracket > .champion { grid-column: 2; grid-row: 1; }
 

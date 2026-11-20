@@ -36,6 +36,7 @@ export function createDefaultState() {
         results: {},
         passOpponents: {},
         highLoserSlotId: "",
+        lowLoserFinalistIds: [],
         schedule: createDefaultSchedule(),
         layout: {}
     };
@@ -167,14 +168,28 @@ export function buildBracket(state) {
             selectedPassOpponent(`low-pass-${index + 1}`, state.teams.highLoserWildcard)
         )
     );
-    // Con seis equipos Low hay tres perdedores. Los dos primeros disputan la
-    // eliminatoria y el tercero espera al ganador en la final de perdedores.
-    const lowLoserSemi = createMatch(results, "low-lb-sf-1", winner(lowPass[0]), winner(lowPass[1]));
+    // Furritos es el filtro del Pase Low. Sus victorias eliminan al rival,
+    // pero el equipo solo puede clasificar una vez y únicamente si gana dos
+    // o más retos. Así, normalmente quedan dos finalistas directos.
+    const lowPassWinners = lowPass.map(winner).filter(Boolean);
+    const furritosWins = lowPassWinners.filter(item => item.id === state.teams.highLoserWildcard.id).length;
+    const nonFurritosWinners = lowPassWinners.filter(item => item.id !== state.teams.highLoserWildcard.id);
+    const lowLoserCandidates = furritosWins >= 2
+        ? [state.teams.highLoserWildcard, ...nonFurritosWinners]
+        : nonFurritosWinners;
+    const manualLowFinalists = lowLoserCandidates.length > 2
+        ? (state.lowLoserFinalistIds || [])
+            .filter(id => lowLoserCandidates.some(team => team.id === id))
+            .slice(0, 2)
+        : [];
+    const lowLoserFinalists = manualLowFinalists.length === 2
+        ? manualLowFinalists.map(id => lowLoserCandidates.find(team => team.id === id))
+        : lowLoserCandidates.slice(0, 2);
     const lowLoserFinal = createMatch(
         results,
         "low-lb-final",
-        winner(lowLoserSemi),
-        winner(lowPass[2])
+        lowLoserFinalists[0] || null,
+        lowLoserFinalists[1] || null
     );
     const lowSemi = [
         createMatch(results, "low-sf-1", winner(lowQuarter[0]), winner(lowQuarter[1])),
@@ -217,7 +232,7 @@ export function buildBracket(state) {
             access: {
                 id: "low-pass-access",
                 title: "Acceso a perdedores",
-                teams: lowPass.map(winner)
+                teams: lowLoserFinalists
             }
         },
         "high-loser": {
@@ -230,10 +245,11 @@ export function buildBracket(state) {
         },
         "low-loser": {
             rounds: [
-                makeRound("low-lb-sf", "Eliminatoria", [lowLoserSemi]),
                 makeRound("low-lb-final", "Final", [lowLoserFinal])
             ],
-            champion: winner(lowLoserFinal)
+            champion: winner(lowLoserFinal),
+            finalistCandidates: lowLoserCandidates,
+            finalistSelection: lowLoserFinalists
         }
     };
 
@@ -252,6 +268,7 @@ export function buildBracket(state) {
         results: state.results,
         passOpponents: state.passOpponents || {},
         highLoserSlotId: state.highLoserSlotId || "",
+        lowLoserFinalistIds: state.lowLoserFinalistIds || [],
         schedule,
         layout: state.layout || {},
         brackets,
@@ -284,12 +301,16 @@ export function sanitizeState(input) {
         results: {},
         passOpponents: {},
         highLoserSlotId: "",
+        lowLoserFinalistIds: [],
         schedule: [],
         layout: sanitizeLayout(input?.layout)
     };
     const teamMap = getTeamMap(state);
     state.passOpponents = sanitizePassOpponents(input?.passOpponents, teamMap);
     state.highLoserSlotId = teamMap.has(input?.highLoserSlotId) ? input.highLoserSlotId : "";
+    state.lowLoserFinalistIds = Array.isArray(input?.lowLoserFinalistIds)
+        ? [...new Set(input.lowLoserFinalistIds.filter(id => teamMap.has(id)))].slice(0, 2)
+        : [];
     state.schedule = sanitizeSchedule(input?.schedule, teamMap);
     const calculated = buildBracket({ ...state, results: rawResults });
 

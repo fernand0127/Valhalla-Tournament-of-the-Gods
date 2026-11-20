@@ -162,6 +162,37 @@ function renderHighLoserSlot(data) {
     });
 }
 
+function renderLowLoserFinalists(data) {
+    const editor = $("#lowLoserFinalistEditor");
+    const help = $("#lowLoserFinalistHelp");
+    const bracket = data.brackets["low-loser"];
+    const candidates = bracket.finalistCandidates || [];
+    const selected = bracket.finalistSelection || [];
+    editor.replaceChildren();
+
+    if (candidates.length <= 2) {
+        help.textContent = candidates.length === 2
+            ? "Los dos finalistas ya se asignaron automáticamente según los resultados del Pase Low."
+            : "Esperando resultados del Pase Low para definir los dos finalistas.";
+        return;
+    }
+
+    help.textContent = "Furritos perdió los tres retos; elige los dos equipos que disputarán la única final de Perdedores Low.";
+    [0, 1].forEach(index => {
+        const label = document.createElement("label");
+        label.className = "schedule-field";
+        label.textContent = `Finalista ${index + 1}`;
+        const select = document.createElement("select");
+        select.dataset.lowLoserFinalist = String(index);
+        select.add(new Option("Selecciona un equipo", ""));
+        candidates.forEach(team => {
+            select.add(new Option(team.name, team.id, false, selected[index]?.id === team.id));
+        });
+        label.appendChild(select);
+        editor.appendChild(label);
+    });
+}
+
 function readableMatch(match) {
     return `${match.teamA?.name || "TBD"} vs ${match.teamB?.name || "TBD"}`;
 }
@@ -294,6 +325,7 @@ function showDashboard(data) {
     renderSchedule(data);
     renderPassOpponents(data);
     renderHighLoserSlot(data);
+    renderLowLoserFinalists(data);
     renderMatches(data);
     renderLayout(data);
 }
@@ -338,6 +370,9 @@ function getFormState() {
     });
 
     const highLoserSlotId = $("[data-high-loser-slot]")?.value || "";
+    const lowLoserFinalistIds = [...document.querySelectorAll("[data-low-loser-finalist]")]
+        .map(select => select.value)
+        .filter(Boolean);
 
     const schedule = (bracketData?.schedule || []).map(match => structuredClone(match));
 
@@ -355,7 +390,7 @@ function getFormState() {
         layout[key][input.dataset.layoutAxis] = Number(input.value) || 0;
     });
 
-    return { teams, results, passOpponents, highLoserSlotId, schedule, layout };
+    return { teams, results, passOpponents, highLoserSlotId, lowLoserFinalistIds, schedule, layout };
 }
 
 $("#loginForm").addEventListener("submit", async event => {
