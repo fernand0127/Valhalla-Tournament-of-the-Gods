@@ -15,7 +15,7 @@ const LOCAL_TEAM_IMAGES = {
     "high-8": "/img/teams/papu-rivals.png",
     "high-9": "/img/teams/team-aura.png",
     "high-10": "/img/teams/berry-baddies.png",
-    "high-11": "/img/teams/lobos-de-bajo-presupuesto.png",
+    "high-11": "/img/teams/chaos-team.png",
     "high-12": "/img/teams/no-name.png",
     "high-13": "/img/teams/womp-womp.png",
     "low-1": "/img/teams/noctua-owls.png",
