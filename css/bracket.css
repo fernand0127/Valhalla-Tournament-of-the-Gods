@@ -2299,3 +2299,133 @@
     }
 }
 
+/* ==================================================
+   TABLERO MÓVIL: misma geometría que escritorio
+   Nunca se reposicionan partidos de forma independiente.
+   Se escala el tablero completo, por lo que las conexiones
+   entre rondas conservan el orden en cualquier pantalla.
+   ================================================== */
+@media (max-width: 1200px) {
+    .tournament {
+        overflow-x: auto;
+        overflow-y: hidden;
+        background-color: #0d0c08;
+    }
+
+    .tournament > .bracket {
+        grid-template-columns: repeat(4, 280px) 340px;
+        column-gap: 26px;
+        row-gap: 0;
+        min-width: 1582px;
+        padding: 38px 32px 60px;
+    }
+
+    .tournament > .bracket > .round {
+        width: 280px;
+        min-width: 280px;
+        padding-top: 68px;
+    }
+
+    .tournament > .bracket > .round .team-card {
+        width: 280px;
+        min-width: 280px;
+        height: 74px;
+        min-height: 74px;
+        padding-inline: 22px;
+        font-size: 1rem;
+        line-height: normal;
+    }
+
+    .tournament > .bracket > .round .match { gap: 16px; }
+
+    [data-bracket-id="high"] > .bracket {
+        min-height: 1520px;
+    }
+    [data-bracket-id="high"] > .bracket > .round {
+        grid-template-rows: repeat(7, 164px);
+        row-gap: 42px;
+    }
+
+    [data-bracket-id="low"] > .bracket,
+    [data-bracket-id="high-loser"] > .bracket {
+        grid-template-columns: repeat(3, 280px) 340px;
+        min-width: 1232px;
+    }
+    [data-bracket-id="low"] > .bracket {
+        min-height: 700px;
+    }
+    [data-bracket-id="high-loser"] > .bracket {
+        min-height: 910px;
+    }
+    [data-bracket-id="low"] > .bracket > .round {
+        grid-template-rows: repeat(3, 164px);
+        row-gap: 42px;
+    }
+    [data-bracket-id="high-loser"] > .bracket > .round {
+        grid-template-rows: repeat(4, 164px);
+        row-gap: 42px;
+    }
+
+    [data-bracket-id="low-loser"] > .bracket {
+        grid-template-columns: repeat(2, 280px) 340px;
+        min-width: 952px;
+        min-height: 560px;
+    }
+    [data-bracket-id="low-loser"] > .bracket > .round {
+        grid-template-rows: repeat(2, 164px);
+        row-gap: 42px;
+    }
+    [data-bracket-id="low-loser"] > .bracket > .champion {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    [data-bracket-id="high-pass"] > .bracket,
+    [data-bracket-id="low-pass"] > .bracket {
+        grid-template-columns: repeat(2, 280px);
+        min-width: 650px;
+        justify-content: center;
+    }
+    [data-bracket-id="high-pass"] > .bracket {
+        min-height: 1300px;
+    }
+    [data-bracket-id="high-pass"] > .bracket > .round {
+        grid-template-rows: repeat(6, 164px);
+        row-gap: 42px;
+    }
+    [data-bracket-id="low-pass"] > .bracket {
+        min-height: 700px;
+    }
+    [data-bracket-id="low-pass"] > .bracket > .round {
+        grid-template-rows: repeat(3, 164px);
+        row-gap: 42px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+    [data-bracket-id="high"] > .bracket { zoom: .68; }
+    [data-bracket-id="low"] > .bracket,
+    [data-bracket-id="high-loser"] > .bracket { zoom: .82; }
+    [data-bracket-id="low-loser"] > .bracket { zoom: 1; }
+    [data-bracket-id="high-pass"] > .bracket,
+    [data-bracket-id="low-pass"] > .bracket { zoom: 1; }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    [data-bracket-id="high"] > .bracket { zoom: .46; }
+    [data-bracket-id="low"] > .bracket,
+    [data-bracket-id="high-loser"] > .bracket { zoom: .60; }
+    [data-bracket-id="low-loser"] > .bracket { zoom: .80; }
+    [data-bracket-id="high-pass"] > .bracket,
+    [data-bracket-id="low-pass"] > .bracket { zoom: 1; }
+}
+
+@media (max-width: 480px) {
+    [data-bracket-id="high"] > .bracket { zoom: .30; }
+    [data-bracket-id="low"] > .bracket,
+    [data-bracket-id="high-loser"] > .bracket { zoom: .32; }
+    [data-bracket-id="low-loser"] > .bracket { zoom: .40; }
+    [data-bracket-id="high-pass"] > .bracket,
+    [data-bracket-id="low-pass"] > .bracket { zoom: .60; }
+}
+
