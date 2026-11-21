@@ -172,18 +172,19 @@ export function buildBracket(state) {
     const highLoserFirst = [
         createMatch(results, "high-lb-r1-1", winner(highPass[0]), winner(highPass[1])),
         createMatch(results, "high-lb-r1-2", winner(highPass[2]), winner(highPass[3])),
-        createMatch(results, "high-lb-r1-3", winner(highPass[4]), winner(highPass[5])),
-        createMatch(results, "high-lb-r1-4", winner(highPass[6]), highLoserSlot)
+        createMatch(results, "high-lb-r1-3", winner(highPass[4]), highLoserSlot)
     ];
-    const highLoserSemi = [
-        createMatch(results, "high-lb-sf-1", winner(highLoserFirst[0]), winner(highLoserFirst[1])),
-        createMatch(results, "high-lb-sf-2", winner(highLoserFirst[2]), winner(highLoserFirst[3]))
-    ];
+    const highLoserSemi = createMatch(
+        results,
+        "high-lb-sf-1",
+        winner(highLoserFirst[0]),
+        winner(highLoserFirst[1])
+    );
     const highLoserFinal = createMatch(
         results,
         "high-lb-final",
-        winner(highLoserSemi[0]),
-        winner(highLoserSemi[1])
+        winner(highLoserSemi),
+        winner(highLoserFirst[2])
     );
 
     const highQuarter = [
@@ -281,7 +282,7 @@ export function buildBracket(state) {
         "high-loser": {
             rounds: [
                 makeRound("high-lb-r1", "Primera ronda", highLoserFirst),
-                makeRound("high-lb-sf", "Semifinales", highLoserSemi),
+                makeRound("high-lb-sf", "Semifinal", [highLoserSemi]),
                 makeRound("high-lb-final", "Final", [highLoserFinal])
             ],
             champion: winner(highLoserFinal)
@@ -348,7 +349,9 @@ export function sanitizeState(input) {
     };
     const teamMap = getTeamMap(state);
     state.passOpponents = sanitizePassOpponents(input?.passOpponents, teamMap);
-    state.highLoserSlotId = teamMap.has(input?.highLoserSlotId) ? input.highLoserSlotId : "";
+    state.highLoserSlotId = teamMap.has(input?.highLoserSlotId) && !WITHDRAWN_HIGH_TEAM_IDS.has(input.highLoserSlotId)
+        ? input.highLoserSlotId
+        : "";
     state.lowLoserFinalistIds = Array.isArray(input?.lowLoserFinalistIds)
         ? [...new Set(input.lowLoserFinalistIds.filter(id => teamMap.has(id)))].slice(0, 2)
         : [];

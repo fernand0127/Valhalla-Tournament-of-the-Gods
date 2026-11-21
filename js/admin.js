@@ -157,7 +157,9 @@ function renderPassOpponents(data) {
 function renderHighLoserSlot(data) {
     const select = $("#highLoserSlot");
     select.replaceChildren(new Option("Sin equipo / TBD", ""));
-    [...data.teams.high, ...data.teams.low, data.teams.highLoserWildcard].forEach(team => {
+    [...data.teams.high, ...data.teams.low, data.teams.highLoserWildcard]
+        .filter(team => !["high-12", "high-14"].includes(team.id))
+        .forEach(team => {
         select.add(new Option(team.name, team.id, false, data.highLoserSlotId === team.id));
     });
 }
