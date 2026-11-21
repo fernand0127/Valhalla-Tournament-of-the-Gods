@@ -32,7 +32,6 @@
 
 }
 
-
 /*==================================================
                 BRACKET SECTION
 ==================================================*/
@@ -2429,14 +2428,20 @@
     [data-bracket-id="low-pass"] > .bracket { zoom: .60; }
 }
 
-/* Los pases muestran un resultado exactamente a la altura de cada reto.
-   El bloque de acceso antes se centraba como una sola lista y dejaba los
-   resultados visualmente desconectados de sus enfrentamientos. */
+/* Los pases se construyen con una cantidad variable de retos. Cada tarjeta
+   de acceso recibe su propia fila, por lo que queda frente al combate que la
+   produjo en vez de apilarse como una lista centrada. */
 @media (max-width: 1200px) {
+    [data-bracket-id="high-pass"] > .bracket > .round,
+    [data-bracket-id="low-pass"] > .bracket > .round {
+        grid-template-rows: repeat(var(--match-count, 1), 164px);
+        row-gap: 42px;
+    }
+
     [data-bracket-id="high-pass"] > .bracket > .bracket-access,
     [data-bracket-id="low-pass"] > .bracket > .bracket-access {
         display: grid;
-        grid-template-rows: repeat(6, 164px);
+        grid-template-rows: repeat(var(--access-count, 1), 164px);
         grid-column: 2;
         grid-row: 1;
         align-self: start;
@@ -2454,20 +2459,15 @@
 
     [data-bracket-id="high-pass"] .qualification-team,
     [data-bracket-id="low-pass"] .qualification-team {
+        grid-row: var(--access-row);
+        align-self: center;
         width: 280px;
         min-width: 280px;
         height: 74px;
         min-height: 74px;
-        align-self: center;
     }
 
-    [data-bracket-id="low-pass"] > .bracket > .bracket-access {
-        grid-template-rows: repeat(3, 164px);
-        row-gap: 42px;
-    }
-
-    /* Perdedores Low solo tiene una final: no necesita las filas vacías de
-       una llave de dos semifinales. */
+    /* Esta llave solo contiene una final y su campeón. */
     [data-bracket-id="low-loser"] > .bracket {
         min-height: 320px;
     }
@@ -2476,9 +2476,5 @@
         grid-template-rows: 164px;
         row-gap: 0;
     }
-}
-
-@media (max-width: 480px) {
-    [data-bracket-id="low-loser"] > .bracket { zoom: .60; }
 }
 

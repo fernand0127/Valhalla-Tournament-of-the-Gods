@@ -55,9 +55,11 @@ function renderAccess(access, layout, tournament) {
     if (card) {
         card.replaceChildren();
         applyLayout(card, layout, `access:${access.id}`);
+        accessElement.style.setProperty("--access-count", String(access.teams.length));
         access.teams.forEach((team, index) => {
             const entry = bracketElement("div", "team-card qualification-team", team?.name || "TBD");
             applyLayout(entry, layout, `access:${access.id}-${index + 1}`);
+            entry.style.setProperty("--access-row", String(index + 1));
             card.appendChild(entry);
         });
     }
@@ -82,6 +84,7 @@ function renderBracket(bracketId, data, layout) {
 
         const heading = roundElement.querySelector("h3");
         roundElement.dataset.roundId = round.id;
+        roundElement.style.setProperty("--match-count", String(round.matches.length));
 
         if (heading) {
             heading.textContent = round.title;
