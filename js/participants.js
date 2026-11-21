@@ -35,7 +35,7 @@ async function loadParticipants() {
             ...data.teams.high,
             ...data.teams.low,
             data.teams.highLoserWildcard
-        ].filter(team => team && team.id !== "high-14");
+        ].filter(team => team && !["high-12", "high-14"].includes(team.id));
 
         grid.replaceChildren(...teams.map(participantCard));
     } catch (error) {

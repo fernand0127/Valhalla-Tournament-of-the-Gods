@@ -1,6 +1,7 @@
 const STORAGE_KEY = "current";
 
 const team = (id, name, image = "", imageSize = 100) => ({ id, name, image, imageSize });
+const WITHDRAWN_HIGH_TEAM_IDS = new Set(["high-12", "high-14"]);
 
 // Estos logos forman parte del sitio publicado. Así nunca dependen de una
 // sesión de Google, un enlace temporal de Discord o el dispositivo del admin.
@@ -156,16 +157,18 @@ export function buildBracket(state) {
 
     // Los perdedores de la primera ronda disputan primero el pase al cuadro
     // de perdedores. Los ganadores de esta fase entran al cuadro principal.
-    // El séptimo encuentro de High queda como descalificación en el cuadro
-    // principal; sus equipos no disputan el Pase a Perdedores.
-    const highPass = highFirst.slice(0, 6).map((match, index) =>
+    // Los equipos retirados permanecen visibles en el cuadro principal,
+    // pero no entran al Pase a Perdedores.
+    const highPass = highFirst
+        .filter(match => !match.candidates.some(item => WITHDRAWN_HIGH_TEAM_IDS.has(item.id)))
+        .map((match, index) =>
         createMatch(
             results,
             `high-pass-${index + 1}`,
             loser(match),
             selectedPassOpponent(`high-pass-${index + 1}`, state.teams.highLoserWildcard)
         )
-    );
+        );
     const highLoserFirst = [
         createMatch(results, "high-lb-r1-1", winner(highPass[0]), winner(highPass[1])),
         createMatch(results, "high-lb-r1-2", winner(highPass[2]), winner(highPass[3])),
