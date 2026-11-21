@@ -1908,6 +1908,263 @@
 }
 [data-bracket-id="low-pass"] > .bracket > .round .match:nth-child(4) { grid-row: 3; }
 
+/* ==================================================
+   VISTA RESPONSIVA DE LLAVES
+   En pantallas compactas cada llave conserva su forma,
+   pero usa columnas y tarjetas más estrechas. Así se
+   puede recorrer horizontalmente sin que el tablero se
+   recorte ni aparezca una franja de otro color.
+   ================================================== */
+@media (max-width: 768px) {
+    .bracket-section {
+        overflow: hidden;
+        background: #070705;
+    }
+
+    .bracket-section::before {
+        background: radial-gradient(circle at top, rgba(212, 175, 55, .045), transparent 66%);
+    }
+
+    .bracket-section .container {
+        left: auto;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+    }
+
+    .tournament {
+        --mobile-card-width: 176px;
+        --mobile-column-gap: 16px;
+        --mobile-champion-width: 210px;
+        width: 100%;
+        max-width: 100%;
+        margin: 32px 0 52px;
+        border-radius: 22px;
+        background-color: #0d0c08;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, .035), rgba(255, 255, 255, .01));
+        overflow-x: auto;
+        overflow-y: hidden;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x proximity;
+    }
+
+    .tournament::before {
+        background: radial-gradient(circle at top, rgba(212, 175, 55, .045), transparent 64%);
+    }
+
+    .tournament-header {
+        padding: 18px 16px;
+    }
+
+    .tournament-header h2 {
+        font-size: clamp(1rem, 4.4vw, 1.3rem);
+        letter-spacing: 1.4px;
+        text-align: center;
+    }
+
+    .tournament > .bracket {
+        grid-template-columns: repeat(4, var(--mobile-card-width)) var(--mobile-champion-width);
+        column-gap: var(--mobile-column-gap);
+        min-width: calc((var(--mobile-card-width) * 4) + (var(--mobile-column-gap) * 4) + var(--mobile-champion-width));
+        padding: 24px 16px 34px;
+        background: transparent;
+    }
+
+    .tournament > .bracket > .round {
+        width: var(--mobile-card-width);
+        min-width: var(--mobile-card-width);
+        padding-top: 52px;
+        scroll-snap-align: start;
+    }
+
+    .tournament > .bracket > .round .team-card {
+        width: var(--mobile-card-width);
+        min-width: var(--mobile-card-width);
+        min-height: 52px;
+        height: 52px;
+        padding: 0 13px;
+        font-size: .72rem;
+        line-height: 1.2;
+    }
+
+    .tournament > .bracket > .round > div:first-child h3,
+    .bracket-access h3 {
+        font-size: .74rem;
+        letter-spacing: 1px;
+        line-height: 1.25;
+    }
+
+    .tournament > .bracket > .champion {
+        min-width: var(--mobile-champion-width);
+        scroll-snap-align: start;
+    }
+
+    .champion-card {
+        min-height: 154px;
+        padding: 22px 14px;
+    }
+
+    .champion-card .trophy { font-size: 2rem; }
+    .champion-card .winner-name { font-size: .92rem; }
+
+    [data-bracket-id="low"] > .bracket,
+    [data-bracket-id="high-loser"] > .bracket {
+        grid-template-columns: repeat(3, var(--mobile-card-width)) var(--mobile-champion-width);
+        min-width: calc((var(--mobile-card-width) * 3) + (var(--mobile-column-gap) * 3) + var(--mobile-champion-width));
+    }
+
+    [data-bracket-id="low-loser"] > .bracket {
+        grid-template-columns: repeat(2, var(--mobile-card-width)) var(--mobile-champion-width);
+        min-width: calc((var(--mobile-card-width) * 2) + (var(--mobile-column-gap) * 2) + var(--mobile-champion-width));
+    }
+
+    [data-bracket-id="high-pass"] > .bracket,
+    [data-bracket-id="low-pass"] > .bracket {
+        grid-template-columns: repeat(2, var(--mobile-card-width));
+        min-width: calc((var(--mobile-card-width) * 2) + var(--mobile-column-gap));
+        justify-content: start;
+    }
+
+    .bracket-access {
+        width: var(--mobile-card-width);
+        min-width: var(--mobile-card-width);
+        padding-top: 52px;
+    }
+
+    .qualification-card { gap: 12px; }
+
+    [data-bracket-id="high"] > .bracket {
+        min-height: 1132px;
+    }
+
+    [data-bracket-id="high"] > .bracket > .round {
+        grid-template-rows: repeat(7, 116px);
+        row-gap: 22px;
+    }
+
+    [data-bracket-id="low"] > .bracket,
+    [data-bracket-id="high-loser"] > .bracket {
+        min-height: 760px;
+    }
+
+    [data-bracket-id="low"] > .bracket > .round,
+    [data-bracket-id="high-loser"] > .bracket > .round {
+        grid-template-rows: repeat(4, 116px);
+        row-gap: 22px;
+    }
+
+    [data-bracket-id="low"] > .bracket {
+        min-height: 616px;
+    }
+
+    [data-bracket-id="low"] > .bracket > .round {
+        grid-template-rows: repeat(3, 116px);
+    }
+
+    [data-bracket-id="low-loser"] > .bracket {
+        min-height: 382px;
+    }
+
+    [data-bracket-id="low-loser"] > .bracket > .round {
+        grid-template-rows: repeat(2, 116px);
+        row-gap: 22px;
+    }
+
+    [data-bracket-id="high-pass"] > .bracket {
+        min-height: 970px;
+    }
+
+    [data-bracket-id="high-pass"] > .bracket > .round {
+        grid-template-rows: repeat(6, 116px);
+        row-gap: 22px;
+    }
+
+    [data-bracket-id="low-pass"] > .bracket {
+        min-height: 510px;
+    }
+
+    [data-bracket-id="low-pass"] > .bracket > .round {
+        grid-template-rows: repeat(3, 116px);
+        row-gap: 22px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tournament {
+        --mobile-card-width: 152px;
+        --mobile-column-gap: 12px;
+        --mobile-champion-width: 184px;
+    }
+
+    .tournament > .bracket { padding-inline: 12px; }
+
+    .tournament > .bracket > .round .team-card {
+        min-height: 48px;
+        height: 48px;
+        padding-inline: 10px;
+        font-size: .66rem;
+    }
+
+    .tournament > .bracket > .round > div:first-child h3,
+    .bracket-access h3 { font-size: .68rem; }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+    .tournament {
+        --mobile-card-width: 150px;
+        --mobile-column-gap: 12px;
+        --mobile-champion-width: 184px;
+        margin-block: 22px 34px;
+    }
+
+    .tournament-header { padding: 13px 16px; }
+    .tournament > .bracket { padding: 18px 14px 28px; }
+
+    .tournament > .bracket > .round,
+    .bracket-access { padding-top: 44px; }
+
+    .tournament > .bracket > .round .team-card {
+        min-height: 44px;
+        height: 44px;
+        padding-inline: 10px;
+        font-size: .65rem;
+    }
+
+    [data-bracket-id="high"] > .bracket { min-height: 868px; }
+    [data-bracket-id="high"] > .bracket > .round {
+        grid-template-rows: repeat(7, 92px);
+        row-gap: 16px;
+    }
+
+    [data-bracket-id="low"] > .bracket,
+    [data-bracket-id="high-loser"] > .bracket { min-height: 520px; }
+    [data-bracket-id="low"] > .bracket > .round,
+    [data-bracket-id="high-loser"] > .bracket > .round {
+        grid-template-rows: repeat(4, 92px);
+        row-gap: 16px;
+    }
+    [data-bracket-id="low"] > .bracket { min-height: 424px; }
+    [data-bracket-id="low"] > .bracket > .round { grid-template-rows: repeat(3, 92px); }
+
+    [data-bracket-id="low-loser"] > .bracket { min-height: 296px; }
+    [data-bracket-id="low-loser"] > .bracket > .round {
+        grid-template-rows: repeat(2, 92px);
+        row-gap: 16px;
+    }
+
+    [data-bracket-id="high-pass"] > .bracket { min-height: 724px; }
+    [data-bracket-id="high-pass"] > .bracket > .round {
+        grid-template-rows: repeat(6, 92px);
+        row-gap: 16px;
+    }
+    [data-bracket-id="low-pass"] > .bracket { min-height: 394px; }
+    [data-bracket-id="low-pass"] > .bracket > .round {
+        grid-template-rows: repeat(3, 92px);
+        row-gap: 16px;
+    }
+}
+
 /* Perdedores Low tiene una sola final; su campeón entra a la segunda
    semifinal del cuadro Low principal. */
 [data-bracket-id="low-loser"] > .bracket {
