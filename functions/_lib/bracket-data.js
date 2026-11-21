@@ -171,20 +171,17 @@ export function buildBracket(state) {
         );
     const highLoserFirst = [
         createMatch(results, "high-lb-r1-1", winner(highPass[0]), winner(highPass[1])),
-        createMatch(results, "high-lb-r1-2", winner(highPass[2]), winner(highPass[3])),
-        createMatch(results, "high-lb-r1-3", winner(highPass[4]), highLoserSlot)
+        createMatch(results, "high-lb-r1-2", winner(highPass[2]), winner(highPass[3]))
     ];
-    const highLoserSemi = createMatch(
-        results,
-        "high-lb-sf-1",
-        winner(highLoserFirst[0]),
-        winner(highLoserFirst[1])
-    );
+    const highLoserSemi = [
+        createMatch(results, "high-lb-sf-1", winner(highLoserFirst[0]), winner(highPass[4])),
+        createMatch(results, "high-lb-sf-2", winner(highLoserFirst[1]), highLoserSlot)
+    ];
     const highLoserFinal = createMatch(
         results,
         "high-lb-final",
-        winner(highLoserSemi),
-        winner(highLoserFirst[2])
+        winner(highLoserSemi[0]),
+        winner(highLoserSemi[1])
     );
 
     const highQuarter = [
@@ -282,7 +279,7 @@ export function buildBracket(state) {
         "high-loser": {
             rounds: [
                 makeRound("high-lb-r1", "Primera ronda", highLoserFirst),
-                makeRound("high-lb-sf", "Semifinal", [highLoserSemi]),
+                makeRound("high-lb-sf", "Semifinales", highLoserSemi),
                 makeRound("high-lb-final", "Final", [highLoserFinal])
             ],
             champion: winner(highLoserFinal)
