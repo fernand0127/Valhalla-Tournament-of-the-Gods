@@ -2,6 +2,9 @@ const STORAGE_KEY = "current";
 
 const team = (id, name, image = "", imageSize = 100) => ({ id, name, image, imageSize });
 const WITHDRAWN_HIGH_TEAM_IDS = new Set(["high-12", "high-14"]);
+// Wakanda permanece en Equipos Participantes y en su llave original, pero no
+// disputa el Pase Low Elo.
+const EXCLUDED_LOW_PASS_TEAM_IDS = new Set(["low-6"]);
 
 // Estos logos forman parte del sitio publicado. Así nunca dependen de una
 // sesión de Google, un enlace temporal de Discord o el dispositivo del admin.
@@ -200,14 +203,16 @@ export function buildBracket(state) {
     const lowQuarter = Array.from({ length: 3 }, (_, index) =>
         createMatch(results, `low-qf-${index + 1}`, low[index * 2], low[index * 2 + 1])
     );
-    const lowPass = lowQuarter.map((match, index) =>
+    const lowPass = lowQuarter
+        .filter(match => !match.candidates.some(item => EXCLUDED_LOW_PASS_TEAM_IDS.has(item.id)))
+        .map((match, index) =>
         createMatch(
             results,
             `low-pass-${index + 1}`,
             loser(match),
             selectedPassOpponent(`low-pass-${index + 1}`, state.teams.highLoserWildcard)
         )
-    );
+        );
     // Furritos es el filtro del Pase Low. Sus victorias eliminan al rival,
     // pero el equipo solo puede clasificar una vez y únicamente si gana dos
     // o más retos. Así, normalmente quedan dos finalistas directos.
