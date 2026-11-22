@@ -277,9 +277,8 @@ export function buildBracket(state) {
             access: {
                 id: "low-pass-access",
                 title: "Acceso a perdedores",
-                // Se muestran tres plazas para reflejar los tres pases; la
-                // lógica de clasificación conserva únicamente dos finalistas.
-                teams: [...lowLoserFinalists, ...Array(Math.max(0, 3 - lowLoserFinalists.length)).fill(null)]
+                // Con dos pases activos solo se muestran sus dos plazas de acceso.
+                teams: [...lowLoserFinalists, ...Array(Math.max(0, 2 - lowLoserFinalists.length)).fill(null)]
             }
         },
         "high-loser": {
