@@ -207,6 +207,12 @@ export function buildBracket(state) {
             selectedPassOpponent(`low-pass-${index + 1}`, state.teams.highLoserWildcard)
         )
         );
+    const secondLowPass = lowPass[1];
+    const furritos = state.teams.highLoserWildcard;
+    if (secondLowPass?.candidates.some(team => team.id === furritos.id)) {
+        secondLowPass.winner = furritos;
+        secondLowPass.loser = secondLowPass.candidates.find(team => team.id !== furritos.id) || null;
+    }
     // Furritos es el filtro del Pase Low. Sus victorias eliminan al rival,
     // pero el equipo solo puede clasificar una vez y únicamente si gana dos
     // o más retos. Así, normalmente quedan dos finalistas directos.
@@ -274,8 +280,9 @@ export function buildBracket(state) {
             access: {
                 id: "low-pass-access",
                 title: "Acceso a perdedores",
-                // Con dos pases activos solo se muestran sus dos plazas de acceso.
-                teams: [...lowLoserFinalists, ...Array(Math.max(0, 2 - lowLoserFinalists.length)).fill(null)]
+                // Se reflejan los dos resultados del Pase Low, incluso cuando
+                // Furritos gana ambos cruces.
+                teams: lowPassWinners
             }
         },
         "high-loser": {
