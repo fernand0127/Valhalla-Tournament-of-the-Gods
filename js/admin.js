@@ -154,16 +154,6 @@ function renderPassOpponents(data) {
     });
 }
 
-function renderHighLoserSlot(data) {
-    const select = $("#highLoserSlot");
-    select.replaceChildren(new Option("Sin equipo / TBD", ""));
-    [...data.teams.high, ...data.teams.low, data.teams.highLoserWildcard]
-        .filter(team => !["high-12", "high-14"].includes(team.id))
-        .forEach(team => {
-        select.add(new Option(team.name, team.id, false, data.highLoserSlotId === team.id));
-    });
-}
-
 function renderLowLoserFinalists(data) {
     const editor = $("#lowLoserFinalistEditor");
     const help = $("#lowLoserFinalistHelp");
@@ -326,7 +316,6 @@ function showDashboard(data) {
     renderTeams(data);
     renderSchedule(data);
     renderPassOpponents(data);
-    renderHighLoserSlot(data);
     renderLowLoserFinalists(data);
     renderMatches(data);
     renderLayout(data);
@@ -371,7 +360,6 @@ function getFormState() {
         if (select.value) passOpponents[select.dataset.passOpponentMatch] = select.value;
     });
 
-    const highLoserSlotId = $("[data-high-loser-slot]")?.value || "";
     const lowLoserFinalistIds = [...document.querySelectorAll("[data-low-loser-finalist]")]
         .map(select => select.value)
         .filter(Boolean);
@@ -392,7 +380,7 @@ function getFormState() {
         layout[key][input.dataset.layoutAxis] = Number(input.value) || 0;
     });
 
-    return { teams, results, passOpponents, highLoserSlotId, lowLoserFinalistIds, schedule, layout };
+    return { teams, results, passOpponents, lowLoserFinalistIds, schedule, layout };
 }
 
 $("#loginForm").addEventListener("submit", async event => {
