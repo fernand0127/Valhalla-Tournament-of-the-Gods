@@ -230,9 +230,12 @@ export function buildBracket(state) {
         lowLoserFinalists[0] || null,
         lowLoserFinalists[1] || null
     );
+    // Furritos de Leche ganó el cuadro de perdedores Low y ocupa su plaza
+    // de regreso al bracket principal.
+    const lowLoserChampion = state.teams.highLoserWildcard;
     const lowSemi = [
         createMatch(results, "low-sf-1", winner(lowQuarter[0]), winner(lowQuarter[1])),
-        createMatch(results, "low-sf-2", winner(lowQuarter[2]), winner(lowLoserFinal), { teamB: "LBW" })
+        createMatch(results, "low-sf-2", low[4], lowLoserChampion, { teamB: "LBW" })
     ];
     const lowFinal = createMatch(results, "low-final", winner(lowSemi[0]), winner(lowSemi[1]));
 
@@ -286,7 +289,7 @@ export function buildBracket(state) {
             rounds: [
                 makeRound("low-lb-final", "Final", [lowLoserFinal])
             ],
-            champion: winner(lowLoserFinal),
+            champion: lowLoserChampion,
             finalistCandidates: lowLoserCandidates,
             finalistSelection: lowLoserFinalists
         }
